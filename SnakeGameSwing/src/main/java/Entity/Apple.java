@@ -4,7 +4,6 @@ import Main.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Random;
