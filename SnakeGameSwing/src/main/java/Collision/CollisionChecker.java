@@ -23,7 +23,6 @@ public class CollisionChecker {
                     panel.snakeSpeed -= 10;
             }
             apple.newApple();
-            panel.playSoundEffects(2);
         }
     }
 
@@ -31,19 +30,16 @@ public class CollisionChecker {
         for (int i = panel.bodyParts - 1; i > 0; i--) {
             if (panel.snakeX[0] == panel.snakeX[i] && panel.snakeY[0] == panel.snakeY[i]) {
                 panel.gameOn = false;
-                panel.playSoundEffects(1);
                 break;
             }
         }
 
         if (panel.snakeY[0] < 0 || panel.snakeY[0] >= panel.screenHeight) {
             panel.gameOn = false;
-            panel.playSoundEffects(1);
         }
 
         if (panel.snakeX[0] < 0 || panel.snakeX[0] >= panel.screenWidth) {
             panel.gameOn = false;
-            panel.playSoundEffects(1);
         }
     }
 }

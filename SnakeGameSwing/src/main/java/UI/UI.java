@@ -13,9 +13,10 @@ import java.net.URL;
 import java.util.Scanner;
 
 public class UI {
-    GamePanel panel;
 
-    Image apple, trophy, volume, mute;
+    private GamePanel panel;
+    private Image apple;
+    private Image trophy;
 
     int trophyEarned = 0;
     public int score = 0;
@@ -58,8 +59,6 @@ public class UI {
         try {
             apple = ImageIO.read(getClass().getClassLoader().getResourceAsStream("apple/apple.png"));
             trophy = ImageIO.read(getClass().getClassLoader().getResourceAsStream("extras/trophy.png"));
-            volume = ImageIO.read(getClass().getClassLoader().getResourceAsStream("volume/mute.png"));
-            mute = ImageIO.read(getClass().getClassLoader().getResourceAsStream("volume/volume.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -112,16 +111,6 @@ public class UI {
         graphics2D.drawString(" " + trophyEarned,
                 4 * panel.tileSize + panel.tileSize - 9,
                 panel.tileSize - 2);
-
-        // Draw sound icon (volume/mute)
-        int soundX = panel.tileSize * 20 - 10;
-        int soundSize = panel.tileSize - 4;
-
-        if (panel.soundOn) {
-            graphics2D.drawImage(volume, soundX, panel.tileSize / 4, soundSize, soundSize, null);
-        } else {
-            graphics2D.drawImage(mute, soundX, panel.tileSize / 4, soundSize, soundSize, null);
-        }
     }
 
     private void sendPutRequest(String username, int score) {
@@ -130,7 +119,7 @@ public class UI {
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            conn.setRequestMethod("PUT");  // Set method to PUT
+            conn.setRequestMethod("PUT");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
 

@@ -15,7 +15,6 @@ public class KeyHandler extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
-                panel.playSoundEffects(0);
                 if (!Objects.equals(panel.direction, "down")) panel.direction = "up";
                 if (!panel.gameStart && panel.gameOn) {
                     panel.gameStart = true;
@@ -23,7 +22,6 @@ public class KeyHandler extends KeyAdapter {
                 }
                 break;
             case KeyEvent.VK_DOWN:
-                panel.playSoundEffects(0);
                 if (!Objects.equals(panel.direction, "up")) panel.direction = "down";
                 if (!panel.gameStart && panel.gameOn) {
                     panel.gameStart = true;
@@ -31,7 +29,6 @@ public class KeyHandler extends KeyAdapter {
                 }
                 break;
             case KeyEvent.VK_LEFT:
-                panel.playSoundEffects(0);
                 if (!Objects.equals(panel.direction, "right")) panel.direction = "left";
                 if (!panel.gameStart && panel.gameOn) {
                     panel.gameStart = true;
@@ -39,7 +36,6 @@ public class KeyHandler extends KeyAdapter {
                 }
                 break;
             case KeyEvent.VK_RIGHT:
-                panel.playSoundEffects(0);
                 if (!Objects.equals(panel.direction, "left")) panel.direction = "right";
                 if (!panel.gameStart && panel.gameOn) {
                     panel.gameStart = true;
@@ -74,5 +70,4 @@ public class KeyHandler extends KeyAdapter {
                 break;
         }
     }
-
 }

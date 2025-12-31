@@ -4,7 +4,6 @@ import Collision.CollisionChecker;
 import Entity.Apple;
 import Entity.Snake;
 import Extra.GameOver;
-import SoundEffects.Sound;
 import Tiles.TilesManager;
 import UI.UI;
 
@@ -47,7 +46,6 @@ public class GamePanel extends JPanel implements ActionListener {
     TilesManager manager = new TilesManager(this);
     public UI ui = new UI(this);
     GameOver gameOver = new GameOver(this);
-    Sound sound = new Sound();
 
     public GamePanel() {
         snakeX = new int[gameUnits];
@@ -166,12 +164,5 @@ public class GamePanel extends JPanel implements ActionListener {
             collisionChecker.checkSnakeCollision();
         }
         repaint();
-    }
-
-    public void playSoundEffects(int i) {
-        if (soundOn) {
-            sound.setFile(i);
-            sound.play();
-        }
     }
 }
