@@ -6,30 +6,26 @@ import Entity.Snake;
 import Extra.GameOver;
 import Tiles.TilesManager;
 import UI.UI;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public class GamePanel extends JPanel implements ActionListener {
-    public final int maxScreenRowUnit = 24;
-    public final int maxScreenColUnit = 21;
+    public final int maxScreenRowUnit = 25;
+    public final int maxScreenColUnit = 25;
 
-    final int unitSize = 16;
-    final int scale = 2;
+    private final int unitSize = 16;
+    private final int scale = 2;
     public final int tileSize = scale * unitSize;
 
     public final int screenWidth = maxScreenColUnit * tileSize;
     public final int screenHeight = maxScreenRowUnit * tileSize;
-    public final int gameUnits = (screenWidth * screenHeight) / tileSize;
+    public final int gameUnits =maxScreenColUnit*maxScreenRowUnit;
 
     public int snakeSpeed = 155;
     public String direction = "right";
 
     public int bodyParts = 3;
-
-    public boolean soundOn = true;
-
     public int[] snakeX;
     public int[] snakeY;
     public String[] snakeDir;

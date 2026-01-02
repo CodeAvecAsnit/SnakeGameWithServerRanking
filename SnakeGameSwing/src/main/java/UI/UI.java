@@ -23,7 +23,7 @@ public class UI {
 
     boolean scoreSet = false;
 
-    Font font;
+    private Font font;
 
     public UI(GamePanel panel) {
         this.panel = panel;
@@ -84,20 +84,18 @@ public class UI {
                 }catch (Exception ex){
                     System.out.println(ex.getMessage());
                 }
-                File file = new File("highscore.txt");
 
+                File file = new File("highscore.txt");
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                     writer.write(String.valueOf(trophyEarned));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
-
             if (!scoreSet) {
                 score = panel.collisionChecker.appleEaten;
                 scoreSet = true;
             }
-
             panel.collisionChecker.appleEaten = 0;
 
         } else {

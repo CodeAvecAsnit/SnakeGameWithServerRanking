@@ -4,8 +4,8 @@ import Entity.Apple;
 import Main.GamePanel;
 
 public class CollisionChecker {
-    GamePanel panel;
-    Apple apple;
+    private GamePanel panel;
+    private Apple apple;
 
     public int appleEaten = 0;
 

@@ -43,7 +43,6 @@ public class GameOver {
             graphics2D.setFont(tryAgainFont);
             FontMetrics metrics3 = gamePanel.getFontMetrics(graphics2D.getFont());
             graphics2D.drawString("press SPACE to play again", (gamePanel.screenWidth - metrics3.stringWidth("press SPACE to play again")) / 2, gamePanel.tileSize * 17);
-
         }
     }
 }

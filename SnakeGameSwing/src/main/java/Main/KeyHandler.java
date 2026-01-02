@@ -42,9 +42,6 @@ public class KeyHandler extends KeyAdapter {
                     panel.timer.setDelay(panel.snakeSpeed);
                 }
                 break;
-            case KeyEvent.VK_M:
-                panel.soundOn = !panel.soundOn;
-                break;
             case KeyEvent.VK_SPACE:
                 if (!panel.gameOn) {
                     panel.gameOn = true;

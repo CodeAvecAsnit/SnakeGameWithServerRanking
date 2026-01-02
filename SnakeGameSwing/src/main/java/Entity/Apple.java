@@ -9,16 +9,15 @@ import java.util.Objects;
 import java.util.Random;
 
 public class Apple {
-    GamePanel panel;
+    private GamePanel panel;
+    private Image appleImg;
+    private Random random;
 
-    Image appleImg;
-    Random random;
-
-    public int appleX, appleY;
+    public int appleX;
+    public int appleY;
 
     public Apple(GamePanel panel) {
         random = new Random();
-
         this.panel = panel;
         setImage();
     }
