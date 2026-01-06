@@ -73,7 +73,7 @@ public class LoginSystem extends JFrame {
 
                 if (enteredUsername.equals(storedUsername) && enteredPassword.equals(storedPassword)) {
                     messageLabel.setText("Login Successful!");
-                    openNextPage();
+//                    openNextPage();
                 } else {
                     messageLabel.setText("Invalid username or password.");
                 }
@@ -83,17 +83,17 @@ public class LoginSystem extends JFrame {
         }
     }
 
-    private void openNextPage() {
-        GamePanel panel = new GamePanel();
-        JFrame frame = new JFrame("Snake Game");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(panel);
-        frame.pack();
-        frame.setResizable(false);
-        frame.setVisible(true);
-        frame.setLocationRelativeTo(null);
-        this.dispose();
-    }
+//    private void openNextPage() {
+//        GamePanel panel = new GamePanel();
+//        JFrame frame = new JFrame("Snake Game");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.add(panel);
+//        frame.pack();
+//        frame.setResizable(false);
+//        frame.setVisible(true);
+//        frame.setLocationRelativeTo(null);
+//        this.dispose();
+//    }
 
     public static void main(String[] args) {
         GamePanel panel = new GamePanel();
