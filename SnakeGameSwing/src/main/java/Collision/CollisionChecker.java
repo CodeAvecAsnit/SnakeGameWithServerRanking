@@ -4,42 +4,51 @@ import Entity.Apple;
 import Main.GamePanel;
 
 public class CollisionChecker {
-    private GamePanel panel;
-    private Apple apple;
+    private final GamePanel panel;
+    private final Apple apple;
 
-    public int appleEaten = 0;
+    private int appleEaten;
 
     public CollisionChecker(GamePanel panel, Apple apple) {
         this.panel = panel;
         this.apple = apple;
+        this.appleEaten = 0;
     }
 
-    public void checkAppleCollision() {
-        if (panel.snakeX[0] == apple.appleX && panel.snakeY[0] == apple.appleY) {
+    //reward function
+    public boolean checkAppleCollision() {
+        if (panel.snakeX[0] == apple.getAppleX() && panel.snakeY[0] == apple.getAppleY()) {
             appleEaten++;
             panel.bodyParts++;
+            //increase speed of snake every five apples eaten and als
             if (panel.snakeSpeed > 75) {
                 if (appleEaten % 5 == 0)
                     panel.snakeSpeed -= 10;
             }
             apple.newApple();
+            return true;
         }
+        return false;
     }
 
-    public void checkSnakeCollision() {
+    //death function
+    public boolean isSnakeDead(){
         for (int i = panel.bodyParts - 1; i > 0; i--) {
             if (panel.snakeX[0] == panel.snakeX[i] && panel.snakeY[0] == panel.snakeY[i]) {
-                panel.gameOn = false;
-                break;
+                return true;
             }
         }
-
         if (panel.snakeY[0] < 0 || panel.snakeY[0] >= panel.screenHeight) {
-            panel.gameOn = false;
+            return true;
         }
+        return (panel.snakeX[0] < 0 || panel.snakeX[0] >= panel.screenWidth);
+    }
 
-        if (panel.snakeX[0] < 0 || panel.snakeX[0] >= panel.screenWidth) {
-            panel.gameOn = false;
-        }
+    public int getAppleEaten(){
+        return this.appleEaten;
+    }
+
+    public void setAppleEaten(int val){
+        this.appleEaten=val;
     }
 }

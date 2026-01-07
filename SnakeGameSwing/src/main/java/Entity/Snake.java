@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Snake {
-    GamePanel panel;
 
-    Image[] snakeImg;
+    private final GamePanel panel;
+    private final Image[] snakeImg;
 
     public Snake(GamePanel panel) {
         this.panel = panel;
@@ -50,7 +50,7 @@ public class Snake {
     public void draw(Graphics2D graphics2D) {
         for (int i = 0; i < panel.bodyParts; i++) {
             if (i == 0) {
-                switch (panel.direction) {
+                switch (panel.getDirection()) {
                     case "up":
                         graphics2D.drawImage(snakeImg[0], panel.snakeX[i], panel.snakeY[i], panel.tileSize, panel.tileSize, null);
                         break;

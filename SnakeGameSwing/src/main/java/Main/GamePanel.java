@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class GamePanel extends JPanel implements ActionListener {
+
     public final int maxScreenRowUnit = 25;
     public final int maxScreenColUnit = 25;
 
@@ -22,8 +23,8 @@ public class GamePanel extends JPanel implements ActionListener {
     public final int screenHeight = maxScreenRowUnit * tileSize;
     public final int gameUnits =maxScreenColUnit*maxScreenRowUnit;
 
-    public int snakeSpeed = 155;
-    public String direction = "right";
+    public int snakeSpeed = 10;
+    private String direction = "right";
 
     public int bodyParts = 3;
     public int[] snakeX;
@@ -44,26 +45,9 @@ public class GamePanel extends JPanel implements ActionListener {
     GameOver gameOver = new GameOver(this);
 
     public GamePanel() {
-        snakeX = new int[gameUnits];
-        snakeY = new int[gameUnits];
-        snakeDir = new String[gameUnits];
-
-        snakeX[0] = 4 * tileSize;
-        snakeX[1] = 3 * tileSize;
-        snakeX[2] = 2 * tileSize;
-
-        snakeY[0] = 12 * tileSize;
-        snakeY[1] = 12 * tileSize;
-        snakeY[2] = 12 * tileSize;
-
-        snakeDir[0] = direction;
-        snakeDir[1] = direction;
-        snakeDir[2] = direction;
-
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.addKeyListener(handler);
         this.setFocusable(true);
-
         startGame();
     }
 
@@ -88,16 +72,12 @@ public class GamePanel extends JPanel implements ActionListener {
         direction = "right";
         gameOn = true;
         gameStart = true;
-
-        apple.newApple();
-
+        apple.setAppleStart();
         if (timer != null) {
             timer.stop();
         }
-
         timer = new Timer(snakeSpeed, this);
         timer.start();
-
         requestFocusInWindow();
         repaint();
     }
@@ -136,18 +116,13 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void draw(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
-
         manager.draw(graphics2D);
-
         if (gameOn) {
             apple.draw(graphics2D);
-
             snake.draw(graphics2D);
         } else {
-           ui.draw(graphics2D);
            gameOver.draw(graphics2D,screenWidth,screenHeight);
         }
-
         ui.draw(graphics2D);
     }
 
@@ -157,8 +132,41 @@ public class GamePanel extends JPanel implements ActionListener {
             timer.setDelay(snakeSpeed);
             move();
             collisionChecker.checkAppleCollision();
-            collisionChecker.checkSnakeCollision();
+            if(collisionChecker.isSnakeDead()){
+                gameOn=false;
+                apple.setAppleStart();
+            }
         }
         repaint();
     }
+
+    public int getScoreFromUI(){
+        return ui.getScore();
+    }
+
+    public int getAppleEatenFromCollision(){
+        return collisionChecker.getAppleEaten();
+    }
+
+    public void setAppleEatenFromCollision(int num){
+        collisionChecker.setAppleEaten(num);
+    }
+
+    public String getDirection(){
+        return this.direction;
+    }
+
+    public void setDirection(String direction){
+        this.direction = direction;
+    }
+
+    public boolean checkSnakeDead(){
+        return collisionChecker.isSnakeDead();
+    }
+
+    public boolean checkAppleEaten(){
+        return collisionChecker.checkAppleCollision();
+    }
+
+    public
 }
