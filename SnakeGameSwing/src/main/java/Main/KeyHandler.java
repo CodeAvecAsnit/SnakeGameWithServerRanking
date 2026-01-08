@@ -1,5 +1,7 @@
 package Main;
 
+import Extra.Direction;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Objects;
@@ -19,7 +21,7 @@ public class KeyHandler extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
-                if (!Objects.equals(panel.getDirection(), "down")) panel.setDirection("up");
+                if (!Objects.equals(panel.getDirection(), Direction.DOWN)) panel.setDirection(Direction.UP);
                 if (!panel.gameStart && panel.gameOn) {
                     panel.gameStart = true;
                     panel.timer.setDelay(panel.snakeSpeed);
@@ -27,7 +29,7 @@ public class KeyHandler extends KeyAdapter {
                 break;
 
             case KeyEvent.VK_DOWN:
-                if (!Objects.equals(panel.getDirection(), "up")) panel.setDirection("down");
+                if (!Objects.equals(panel.getDirection(), Direction.UP)) panel.setDirection(Direction.DOWN);
                 if (!panel.gameStart && panel.gameOn) {
                     panel.gameStart = true;
                     panel.timer.setDelay(panel.snakeSpeed);
@@ -35,14 +37,14 @@ public class KeyHandler extends KeyAdapter {
                 break;
 
             case KeyEvent.VK_LEFT:
-                if (!Objects.equals(panel.getDirection(), "right")) panel.setDirection("left");
+                if (!Objects.equals(panel.getDirection(), Direction.RIGHT)) panel.setDirection(Direction.LEFT);
                 if (!panel.gameStart && panel.gameOn) {
                     panel.gameStart = true;
                     panel.timer.setDelay(panel.snakeSpeed);
                 }
                 break;
             case KeyEvent.VK_RIGHT:
-                if (!Objects.equals(panel.getDirection(), "left")) panel.setDirection("right");
+                if (!Objects.equals(panel.getDirection(), Direction.LEFT)) panel.setDirection(Direction.RIGHT);
                 if (!panel.gameStart && panel.gameOn) {
                     panel.gameStart = true;
                     panel.timer.setDelay(panel.snakeSpeed);
@@ -55,7 +57,7 @@ public class KeyHandler extends KeyAdapter {
                     panel.gameStart = false;
 
                     panel.bodyParts = 3;
-                    panel.setDirection("right");
+                    panel.setDirection(Direction.RIGHT);
 
                     panel.snakeX[0] = 4 * panel.tileSize;
                     panel.snakeX[1] = 3 * panel.tileSize;

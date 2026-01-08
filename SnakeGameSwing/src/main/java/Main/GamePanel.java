@@ -9,6 +9,9 @@ import UI.UI;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import Extra.Direction;
+
+import static Extra.Direction.RIGHT;
 
 public class GamePanel extends JPanel implements ActionListener {
 
@@ -23,13 +26,15 @@ public class GamePanel extends JPanel implements ActionListener {
     public final int screenHeight = maxScreenRowUnit * tileSize;
     public final int gameUnits =maxScreenColUnit*maxScreenRowUnit;
 
+
+    public Direction direction;
+
     public int snakeSpeed = 10;
-    private String direction = "right";
 
     public int bodyParts = 3;
     public int[] snakeX;
     public int[] snakeY;
-    public String[] snakeDir;
+    public Direction[] snakeDir;
 
     Timer timer;
 
@@ -54,7 +59,7 @@ public class GamePanel extends JPanel implements ActionListener {
     public void startGame() {
         snakeX = new int[gameUnits];
         snakeY = new int[gameUnits];
-        snakeDir = new String[gameUnits];
+        snakeDir = new Direction[gameUnits];
 
         snakeX[0] = 4 * tileSize;
         snakeX[1] = 3 * tileSize;
@@ -64,12 +69,12 @@ public class GamePanel extends JPanel implements ActionListener {
         snakeY[1] = 12 * tileSize;
         snakeY[2] = 12 * tileSize;
 
-        snakeDir[0] = "right";
-        snakeDir[1] = "right";
-        snakeDir[2] = "right";
+        snakeDir[0] = RIGHT;
+        snakeDir[1] = RIGHT;
+        snakeDir[2] = RIGHT;
 
         bodyParts = 3;
-        direction = "right";
+        direction = RIGHT;
         gameOn = true;
         gameStart = true;
         apple.setAppleStart();
@@ -95,21 +100,21 @@ public class GamePanel extends JPanel implements ActionListener {
         }
 
         switch (direction) {
-            case "right":
+            case RIGHT:
                 snakeX[0] += tileSize;
-                snakeDir[0] = "right";
+                snakeDir[0] = RIGHT;
                 break;
-            case "left":
+            case LEFT:
                 snakeX[0] -= tileSize;
-                snakeDir[0] = "left";
+                snakeDir[0] = Direction.LEFT;
                 break;
-            case "up":
+            case UP:
                 snakeY[0] -= tileSize;
-                snakeDir[0] = "up";
+                snakeDir[0] =Direction.UP;
                 break;
-            case "down":
+            case DOWN:
                 snakeY[0] += tileSize;
-                snakeDir[0] = "down";
+                snakeDir[0] = Direction.DOWN;
                 break;
         }
     }
@@ -152,11 +157,11 @@ public class GamePanel extends JPanel implements ActionListener {
         collisionChecker.setAppleEaten(num);
     }
 
-    public String getDirection(){
+    public Direction getDirection(){
         return this.direction;
     }
 
-    public void setDirection(String direction){
+    public void setDirection(Direction direction){
         this.direction = direction;
     }
 
@@ -168,5 +173,16 @@ public class GamePanel extends JPanel implements ActionListener {
         return collisionChecker.checkAppleCollision();
     }
 
-    public
+    public int getManhattanDistance(){
+        return Math.abs(apple.getAppleX()-snakeX[0])+Math.abs(apple.getAppleY()-snakeY[0]);
+    }
+
+    public int getAppleX(){
+        return apple.getAppleX();
+    }
+
+    public int getAppleY(){
+        return apple.getAppleY();
+    }
+
 }
