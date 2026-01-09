@@ -95,6 +95,7 @@ public class LoginSystem extends JFrame {
 //        this.dispose();
 //    }
 
+
     public static void main(String[] args) {
         GamePanel panel = new GamePanel();
         JFrame frame = new JFrame("Snake Game");
