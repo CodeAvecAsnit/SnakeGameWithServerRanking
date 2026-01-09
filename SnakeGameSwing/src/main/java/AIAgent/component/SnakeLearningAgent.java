@@ -1,40 +1,20 @@
-package AIAgent.agent;
+package AIAgent.component;
 
-import AIAgent.component.QLearningAgent;
 import Extra.Direction;
 import Main.GamePanel;
 
-public class FunctionsMake extends QLearningAgent {
-
+public abstract class SnakeLearningAgent extends QLearningAgent {
     public static final int STATES_SIZE = 64;
     public static final int ACTION_SIZE = 3;
     private static final String FILE_NAME = "snakeTable.bin";
-    private final GamePanel gamePanel;
+    protected final GamePanel gamePanel;
 
-    public FunctionsMake(GamePanel gamePanel) {
+    public SnakeLearningAgent(GamePanel gamePanel) {
         super(0.1,0.9,0.2,STATES_SIZE, ACTION_SIZE ,FILE_NAME);
         this.gamePanel = gamePanel;
     }
 
-//reward design for shortest path use when size < 10
-    public double performActionGreedy(int Action){
-        int oldDistance = gamePanel.getManhattanDistance();
-        // take action here by selection random or best action(call function perform(action);
-        if(gamePanel.checkSnakeDead()) return -100.0;
-
-        if(gamePanel.checkAppleEaten()) return 10.0;
-
-        return (gamePanel.getManhattanDistance()<oldDistance)? 1 : -1;
-    }
-
- //TODO : calculate the amount of last apple eaten if that is more than gridx*gridy times than return -10000;
-  // reason : RL agent learn the safest policy so for larger inputs they learn that the continuing in same loop is safest option so
-    public double performAction(int Action){
-        if(gamePanel.checkSnakeDead()) return -100.0;
-
-        return (gamePanel.checkAppleEaten())? 10.0:-0.01;
-    }
-
+    public abstract double performAction(int Action);
 
     public int getState() {
         Direction currDirection = gamePanel.getDirection();
@@ -210,8 +190,5 @@ public class FunctionsMake extends QLearningAgent {
 
         System.out.println("----------------------------------------");
         System.out.println("Training complete!");
-
     }
-
-
 }
