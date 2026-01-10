@@ -27,7 +27,7 @@ public class DemoGUI {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             panel = new GamePanel(false);
-            agent = new SnakeManagerAgent(panel);
+            agent = new SnakeLearningAgent(panel);
             try {
                 agent.loadQTable();
             } catch (Exception e) {
@@ -72,7 +72,7 @@ public class DemoGUI {
 
         new Thread(() -> {
             GamePanel trainPanel = new GamePanel(true);
-            SnakeManagerAgent trainAgent = new SnakeManagerAgent(trainPanel);
+            SnakeManagerAgent trainAgent = new SnakeLearningAgent(trainPanel);
 
 
             for (int ep = 1; ep <= 5000; ep++) {
