@@ -142,8 +142,9 @@ public class UI {
         }
     }
 
-    public int getScore(){
-        return this.score;
+    public int getScore() {
+        // CRITICAL FIX: Always return score from collision checker, not a separate variable
+        return panel.getAppleEatenFromCollision();
     }
 
     // Write in the binary File

@@ -7,9 +7,9 @@ import java.util.Random;
 public abstract class QLearningAgent {
 
     protected double[][] qTable;
-    protected final double alpha;
+    protected double alpha;
     protected final double gamma;
-    protected double epsilon;
+    public double epsilon;
     protected final Random random;
     private FilePersister filePersister;
 

@@ -11,8 +11,6 @@ import java.awt.*;
 import java.awt.event.*;
 import Extra.Direction;
 
-import static Extra.Direction.RIGHT;
-
 public class GamePanel extends JPanel implements ActionListener {
 
     public final int maxScreenRowUnit = 25;
@@ -24,12 +22,10 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public final int screenWidth = maxScreenColUnit * tileSize;
     public final int screenHeight = maxScreenRowUnit * tileSize;
-    public final int gameUnits =maxScreenColUnit*maxScreenRowUnit;
-
+    public final int gameUnits = maxScreenColUnit * maxScreenRowUnit;
 
     public Direction direction;
-
-    public int snakeSpeed = 10;
+    public int snakeSpeed = 155;
 
     public int bodyParts = 3;
     public int[] snakeX;
@@ -41,22 +37,46 @@ public class GamePanel extends JPanel implements ActionListener {
     public boolean gameStart = false;
     public boolean gameOn = false;
 
-    KeyHandler handler = new KeyHandler(this);
-    Apple apple = new Apple(this);
-    Snake snake = new Snake(this);
-    public CollisionChecker collisionChecker = new CollisionChecker(this, apple);
-    TilesManager manager = new TilesManager(this);
-    public UI ui = new UI(this);
-    GameOver gameOver = new GameOver(this);
+    private boolean simulationMode = false;
+
+    KeyHandler handler;
+    Apple apple;
+    Snake snake;
+    public CollisionChecker collisionChecker;
+    TilesManager manager;
+    public UI ui;
+    GameOver gameOver;
 
     public GamePanel() {
-        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.addKeyListener(handler);
-        this.setFocusable(true);
-        startGame();
+        this(false);
+    }
+    public GamePanel(boolean simulationMode) {
+        this.simulationMode = simulationMode;
+
+        if (!simulationMode) {
+            this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+            handler = new KeyHandler(this);
+            this.addKeyListener(handler);
+            this.setFocusable(true);
+            manager = new TilesManager(this);
+            snake = new Snake(this);
+            gameOver = new GameOver(this);
+        }
+
+
+        apple = new Apple(this);
+        collisionChecker = new CollisionChecker(this, apple);
+        ui = new UI(this);
+
+        if (!simulationMode) {
+            timer = new Timer(snakeSpeed, this);
+            startGame();
+        } else {
+            setBasics();
+        }
     }
 
-    public void startGame() {
+    public void setBasics() {
         snakeX = new int[gameUnits];
         snakeY = new int[gameUnits];
         snakeDir = new Direction[gameUnits];
@@ -69,25 +89,31 @@ public class GamePanel extends JPanel implements ActionListener {
         snakeY[1] = 12 * tileSize;
         snakeY[2] = 12 * tileSize;
 
-        snakeDir[0] = RIGHT;
-        snakeDir[1] = RIGHT;
-        snakeDir[2] = RIGHT;
+        snakeDir[0] = Direction.RIGHT;
+        snakeDir[1] = Direction.RIGHT;
+        snakeDir[2] = Direction.RIGHT;
 
         bodyParts = 3;
-        direction = RIGHT;
+        direction = Direction.RIGHT;
         gameOn = true;
         gameStart = true;
+
+        collisionChecker.setAppleEaten(0);
         apple.setAppleStart();
-        if (timer != null) {
+    }
+
+    public void startGame() {
+        setBasics();
+        if (!simulationMode && timer != null) {
             timer.stop();
+            timer.start();
+            requestFocusInWindow();
+            repaint();
         }
-        timer = new Timer(snakeSpeed, this);
-        timer.start();
-        requestFocusInWindow();
-        repaint();
     }
 
     public void paint(Graphics graphics) {
+        if (simulationMode) return;
         super.paint(graphics);
         draw(graphics);
     }
@@ -102,7 +128,7 @@ public class GamePanel extends JPanel implements ActionListener {
         switch (direction) {
             case RIGHT:
                 snakeX[0] += tileSize;
-                snakeDir[0] = RIGHT;
+                snakeDir[0] = Direction.RIGHT;
                 break;
             case LEFT:
                 snakeX[0] -= tileSize;
@@ -110,7 +136,7 @@ public class GamePanel extends JPanel implements ActionListener {
                 break;
             case UP:
                 snakeY[0] -= tileSize;
-                snakeDir[0] =Direction.UP;
+                snakeDir[0] = Direction.UP;
                 break;
             case DOWN:
                 snakeY[0] += tileSize;
@@ -120,69 +146,82 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void draw(Graphics graphics) {
+        if (simulationMode) return;
+
         Graphics2D graphics2D = (Graphics2D) graphics;
         manager.draw(graphics2D);
         if (gameOn) {
             apple.draw(graphics2D);
             snake.draw(graphics2D);
         } else {
-           gameOver.draw(graphics2D,screenWidth,screenHeight);
+            gameOver.draw(graphics2D, screenWidth, screenHeight);
         }
         ui.draw(graphics2D);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (simulationMode) return;
+
         if (gameStart && gameOn) {
             timer.setDelay(snakeSpeed);
             move();
             collisionChecker.checkAppleCollision();
-            if(collisionChecker.isSnakeDead()){
-                gameOn=false;
+            if (collisionChecker.isSnakeDead()) {
+                gameOn = false;
                 apple.setAppleStart();
             }
         }
         repaint();
     }
 
-    public int getScoreFromUI(){
+    public void simulationStep() {
+        if (!simulationMode) {
+            throw new IllegalStateException("simulationStep() can only be called in simulation mode");
+        }
+    }
+
+    public int getScoreFromUI() {
         return ui.getScore();
     }
 
-    public int getAppleEatenFromCollision(){
+    public int getAppleEatenFromCollision() {
         return collisionChecker.getAppleEaten();
     }
 
-    public void setAppleEatenFromCollision(int num){
+    public void setAppleEatenFromCollision(int num) {
         collisionChecker.setAppleEaten(num);
     }
 
-    public Direction getDirection(){
+    public Direction getDirection() {
         return this.direction;
     }
 
-    public void setDirection(Direction direction){
+    public void setDirection(Direction direction) {
         this.direction = direction;
     }
 
-    public boolean checkSnakeDead(){
+    public boolean checkSnakeDead() {
         return collisionChecker.isSnakeDead();
     }
 
-    public boolean checkAppleEaten(){
+    public boolean checkAppleEaten() {
         return collisionChecker.checkAppleCollision();
     }
 
-    public int getManhattanDistance(){
-        return Math.abs(apple.getAppleX()-snakeX[0])+Math.abs(apple.getAppleY()-snakeY[0]);
+    public int getManhattanDistance() {
+        return Math.abs(apple.getAppleX() - snakeX[0]) + Math.abs(apple.getAppleY() - snakeY[0]);
     }
 
-    public int getAppleX(){
+    public int getAppleX() {
         return apple.getAppleX();
     }
 
-    public int getAppleY(){
+    public int getAppleY() {
         return apple.getAppleY();
     }
 
+    public boolean isSimulationMode() {
+        return simulationMode;
+    }
 }
