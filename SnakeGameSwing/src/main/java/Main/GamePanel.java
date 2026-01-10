@@ -4,79 +4,82 @@ import Collision.CollisionChecker;
 import Entity.Apple;
 import Entity.Snake;
 import Extra.GameOver;
-import SoundEffects.Sound;
 import Tiles.TilesManager;
 import UI.UI;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import Extra.Direction;
 
 public class GamePanel extends JPanel implements ActionListener {
-    public final int maxScreenRowUnit = 24;
-    public final int maxScreenColUnit = 21;
 
-    final int unitSize = 16;
-    final int scale = 2;
+    public final int maxScreenRowUnit = 25;
+    public final int maxScreenColUnit = 25;
+
+    private final int unitSize = 16;
+    private final int scale = 2;
     public final int tileSize = scale * unitSize;
 
     public final int screenWidth = maxScreenColUnit * tileSize;
     public final int screenHeight = maxScreenRowUnit * tileSize;
-    public final int gameUnits = (screenWidth * screenHeight) / tileSize;
+    public final int gameUnits = maxScreenColUnit * maxScreenRowUnit;
 
+    public Direction direction;
     public int snakeSpeed = 155;
-    public String direction = "right";
 
     public int bodyParts = 3;
-
-    public boolean soundOn = true;
-
     public int[] snakeX;
     public int[] snakeY;
-    public String[] snakeDir;
+    public Direction[] snakeDir;
 
     Timer timer;
 
     public boolean gameStart = false;
     public boolean gameOn = false;
 
-    KeyHandler handler = new KeyHandler(this);
-    Apple apple = new Apple(this);
-    Snake snake = new Snake(this);
-    public CollisionChecker collisionChecker = new CollisionChecker(this, apple);
-    TilesManager manager = new TilesManager(this);
-    public UI ui = new UI(this);
-    GameOver gameOver = new GameOver(this);
-    Sound sound = new Sound();
+    private boolean simulationMode = false;
+
+    KeyHandler handler;
+    Apple apple;
+    Snake snake;
+    public CollisionChecker collisionChecker;
+    TilesManager manager;
+    public UI ui;
+    GameOver gameOver;
 
     public GamePanel() {
-        snakeX = new int[gameUnits];
-        snakeY = new int[gameUnits];
-        snakeDir = new String[gameUnits];
+        this(false);
+    }
+    public GamePanel(boolean simulationMode) {
+        this.simulationMode = simulationMode;
 
-        snakeX[0] = 4 * tileSize;
-        snakeX[1] = 3 * tileSize;
-        snakeX[2] = 2 * tileSize;
+        if (!simulationMode) {
+            this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+            handler = new KeyHandler(this);
+            this.addKeyListener(handler);
+            this.setFocusable(true);
+            manager = new TilesManager(this);
+            snake = new Snake(this);
+            gameOver = new GameOver(this);
+        }
 
-        snakeY[0] = 12 * tileSize;
-        snakeY[1] = 12 * tileSize;
-        snakeY[2] = 12 * tileSize;
 
-        snakeDir[0] = direction;
-        snakeDir[1] = direction;
-        snakeDir[2] = direction;
+        apple = new Apple(this);
+        collisionChecker = new CollisionChecker(this, apple);
+        ui = new UI(this);
 
-        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.addKeyListener(handler);
-        this.setFocusable(true);
-
-        startGame();
+        if (!simulationMode) {
+            timer = new Timer(snakeSpeed, this);
+            startGame();
+        } else {
+            setBasics();
+        }
     }
 
-    public void startGame() {
+    public void setBasics() {
         snakeX = new int[gameUnits];
         snakeY = new int[gameUnits];
-        snakeDir = new String[gameUnits];
+        snakeDir = new Direction[gameUnits];
 
         snakeX[0] = 4 * tileSize;
         snakeX[1] = 3 * tileSize;
@@ -86,29 +89,31 @@ public class GamePanel extends JPanel implements ActionListener {
         snakeY[1] = 12 * tileSize;
         snakeY[2] = 12 * tileSize;
 
-        snakeDir[0] = "right";
-        snakeDir[1] = "right";
-        snakeDir[2] = "right";
+        snakeDir[0] = Direction.RIGHT;
+        snakeDir[1] = Direction.RIGHT;
+        snakeDir[2] = Direction.RIGHT;
 
         bodyParts = 3;
-        direction = "right";
+        direction = Direction.RIGHT;
         gameOn = true;
         gameStart = true;
 
-        apple.newApple();
+        collisionChecker.setAppleEaten(0);
+        apple.setAppleStart();
+    }
 
-        if (timer != null) {
+    public void startGame() {
+        setBasics();
+        if (!simulationMode && timer != null) {
             timer.stop();
+            timer.start();
+            requestFocusInWindow();
+            repaint();
         }
-
-        timer = new Timer(snakeSpeed, this);
-        timer.start();
-
-        requestFocusInWindow();
-        repaint();
     }
 
     public void paint(Graphics graphics) {
+        if (simulationMode) return;
         super.paint(graphics);
         draw(graphics);
     }
@@ -121,57 +126,102 @@ public class GamePanel extends JPanel implements ActionListener {
         }
 
         switch (direction) {
-            case "right":
+            case RIGHT:
                 snakeX[0] += tileSize;
-                snakeDir[0] = "right";
+                snakeDir[0] = Direction.RIGHT;
                 break;
-            case "left":
+            case LEFT:
                 snakeX[0] -= tileSize;
-                snakeDir[0] = "left";
+                snakeDir[0] = Direction.LEFT;
                 break;
-            case "up":
+            case UP:
                 snakeY[0] -= tileSize;
-                snakeDir[0] = "up";
+                snakeDir[0] = Direction.UP;
                 break;
-            case "down":
+            case DOWN:
                 snakeY[0] += tileSize;
-                snakeDir[0] = "down";
+                snakeDir[0] = Direction.DOWN;
                 break;
         }
     }
 
     public void draw(Graphics graphics) {
+        if (simulationMode) return;
+
         Graphics2D graphics2D = (Graphics2D) graphics;
-
         manager.draw(graphics2D);
-
         if (gameOn) {
             apple.draw(graphics2D);
-
             snake.draw(graphics2D);
         } else {
-           ui.draw(graphics2D);
-           gameOver.draw(graphics2D,screenWidth,screenHeight);
+            gameOver.draw(graphics2D, screenWidth, screenHeight);
         }
-
         ui.draw(graphics2D);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (simulationMode) return;
+
         if (gameStart && gameOn) {
             timer.setDelay(snakeSpeed);
             move();
             collisionChecker.checkAppleCollision();
-            collisionChecker.checkSnakeCollision();
+            if (collisionChecker.isSnakeDead()) {
+                gameOn = false;
+                apple.setAppleStart();
+            }
         }
         repaint();
     }
 
-    public void playSoundEffects(int i) {
-        if (soundOn) {
-            sound.setFile(i);
-            sound.play();
+    public void simulationStep() {
+        if (!simulationMode) {
+            throw new IllegalStateException("simulationStep() can only be called in simulation mode");
         }
+    }
+
+    public int getScoreFromUI() {
+        return ui.getScore();
+    }
+
+    public int getAppleEatenFromCollision() {
+        return collisionChecker.getAppleEaten();
+    }
+
+    public void setAppleEatenFromCollision(int num) {
+        collisionChecker.setAppleEaten(num);
+    }
+
+    public Direction getDirection() {
+        return this.direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    public boolean checkSnakeDead() {
+        return collisionChecker.isSnakeDead();
+    }
+
+    public boolean checkAppleEaten() {
+        return collisionChecker.checkAppleCollision();
+    }
+
+    public int getManhattanDistance() {
+        return Math.abs(apple.getAppleX() - snakeX[0]) + Math.abs(apple.getAppleY() - snakeY[0]);
+    }
+
+    public int getAppleX() {
+        return apple.getAppleX();
+    }
+
+    public int getAppleY() {
+        return apple.getAppleY();
+    }
+
+    public boolean isSimulationMode() {
+        return simulationMode;
     }
 }

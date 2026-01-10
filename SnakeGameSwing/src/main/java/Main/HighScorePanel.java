@@ -13,6 +13,7 @@ import java.net.URL;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+//Ignore this part for now. Update this part while working on server connection.
 public class HighScorePanel extends JPanel {
     private final int screenWidth;
     private final int screenHeight;

@@ -4,27 +4,37 @@ import Main.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
+/**
+ * @author : Asnit Bakhati
+ */
 public class UI {
-    GamePanel panel;
 
-    Image apple, trophy, volume, mute;
+    private static final String FILE_PATH = "highScore.bin";
 
-    int trophyEarned = 0;
-    public int score = 0;
+    //main singleton gamePanel
+    private final GamePanel panel;
 
-    boolean scoreSet = false;
+    //image of the apple
+    private Image apple;
 
-    Font font;
+    //image of the trophy
+    private Image trophy;
+
+    private int trophyEarned ;
+
+    private int score;
+
+    private boolean scoreSet = false;
+
+    private Font font;
 
     public UI(GamePanel panel) {
+        this.score =  0 ;
         this.panel = panel;
         font = new Font("Space Mono", Font.BOLD, 23);
         setImage();
@@ -32,51 +42,50 @@ public class UI {
     }
 
     public int getTrophyEarned() {
-        File file = new File("highscore.txt");
-
+        File file = new File("highScore.bin");
+        //check if file exists or not
         if (!file.exists()) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                writer.write("0");
+            try{
+                writeInFile(0);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             return 0;
         }
 
-        try (Scanner scanner = new Scanner(file)) {
-            if (scanner.hasNextLine()) {
-                String content = scanner.nextLine().trim();
-                return Integer.parseInt(content);
-            }
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
+        //read this file if it exists
+        try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
+            return dis.readInt();
+        } catch (IOException e) {
+            return 0;
         }
-        return 0;
     }
 
+    //set the image for apple(different from apple in game) and trophy
     public void setImage() {
         try {
             apple = ImageIO.read(getClass().getClassLoader().getResourceAsStream("apple/apple.png"));
             trophy = ImageIO.read(getClass().getClassLoader().getResourceAsStream("extras/trophy.png"));
-            volume = ImageIO.read(getClass().getClassLoader().getResourceAsStream("volume/mute.png"));
-            mute = ImageIO.read(getClass().getClassLoader().getResourceAsStream("volume/volume.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    //Used Swings inbuilt feature
     public void draw(Graphics2D graphics2D) {
         graphics2D.setColor(Color.WHITE);
         graphics2D.setFont(font);
 
         graphics2D.drawImage(apple, panel.tileSize / 2, panel.tileSize / 4, panel.tileSize - 8, panel.tileSize - 8, null);
-        graphics2D.drawString(" " + panel.collisionChecker.appleEaten,
+        graphics2D.drawString(" " + panel.getAppleEatenFromCollision(),
                 panel.tileSize + panel.tileSize / 4,
                 panel.tileSize - 2);
-
+        //When game is off means user is out
         if (!panel.gameOn) {
-            if (panel.collisionChecker.appleEaten > trophyEarned) {
-                trophyEarned = panel.collisionChecker.appleEaten;
+            int currentTrophy = panel.getAppleEatenFromCollision();
+            if (currentTrophy> trophyEarned) {
+                //get the amount of trophy earned
+                trophyEarned = currentTrophy;
                 try {
                     File file = new File("username.txt");
                     Scanner scanner = new Scanner(file);
@@ -85,52 +94,37 @@ public class UI {
                 }catch (Exception ex){
                     System.out.println(ex.getMessage());
                 }
-                File file = new File("highscore.txt");
+                try {
+                    writeInFile(trophyEarned);
+                }catch (IOException ex){
 
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                    writer.write(String.valueOf(trophyEarned));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
                 }
             }
-
             if (!scoreSet) {
-                score = panel.collisionChecker.appleEaten;
+                score = currentTrophy;
                 scoreSet = true;
             }
-
-            panel.collisionChecker.appleEaten = 0;
-
+            panel.setAppleEatenFromCollision(0);
         } else {
             score = 0;
             scoreSet = false;
         }
-
         graphics2D.drawImage(trophy,
                 panel.tileSize * 4, panel.tileSize / 4,
                 panel.tileSize - 8, panel.tileSize - 8, null);
         graphics2D.drawString(" " + trophyEarned,
                 4 * panel.tileSize + panel.tileSize - 9,
                 panel.tileSize - 2);
-
-        // Draw sound icon (volume/mute)
-        int soundX = panel.tileSize * 20 - 10;
-        int soundSize = panel.tileSize - 4;
-
-        if (panel.soundOn) {
-            graphics2D.drawImage(volume, soundX, panel.tileSize / 4, soundSize, soundSize, null);
-        } else {
-            graphics2D.drawImage(mute, soundX, panel.tileSize / 4, soundSize, soundSize, null);
-        }
     }
 
+    //migrate this later to another class //for saving game highscore in the server.
     private void sendPutRequest(String username, int score) {
         try {
             String urlString = "http://localhost:8080/api/snakeGame/update/" + username + "," + score;
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            conn.setRequestMethod("PUT");  // Set method to PUT
+            conn.setRequestMethod("PUT");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
 
@@ -142,10 +136,20 @@ public class UI {
             } else {
                 System.out.println("Failed to update score.");
             }
-
             conn.disconnect();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public int getScore() {
+        // CRITICAL FIX: Always return score from collision checker, not a separate variable
+        return panel.getAppleEatenFromCollision();
+    }
+
+    // Write in the binary File
+    private void writeInFile(int value) throws IOException {
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(FILE_PATH)));
+        dos.writeInt(value);
     }
 }
