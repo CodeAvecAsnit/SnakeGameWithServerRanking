@@ -18,7 +18,6 @@ public abstract class SnakeManagerAgent extends QLearningAgent {
 
     /**
      * FLOOD FILL: Calculates reachable empty tiles.
-     * Essential for the "Vast" problem to avoid self-entrapment.
      */
     public int countAvailableSpace(int startX, int startY) {
         int cols = gamePanel.maxScreenColUnit;
@@ -34,6 +33,7 @@ public abstract class SnakeManagerAgent extends QLearningAgent {
         return performFloodFill(startX / tileSize, startY / tileSize, visited);
     }
 
+
     private int performFloodFill(int x, int y, boolean[][] visited) {
         if (x < 0 || x >= visited.length || y < 0 || y >= visited[0].length || visited[x][y]) return 0;
         visited[x][y] = true;
@@ -41,32 +41,33 @@ public abstract class SnakeManagerAgent extends QLearningAgent {
                 performFloodFill(x, y + 1, visited) + performFloodFill(x, y - 1, visited);
     }
 
+
     public int getState() {
         Direction dir = gamePanel.getDirection();
+        int tile = gamePanel.tileSize;
         int headX = gamePanel.snakeX[0];
         int headY = gamePanel.snakeY[0];
-        int tile = gamePanel.tileSize;
 
         int[] nextPos = nextPosition(headX, headY, dir, tile);
-        int space = countAvailableSpace(nextPos[0], nextPos[1]);
-        int isTrapped = (space < gamePanel.bodyParts) ? 1 : 0;
+        int isTrapped = (countAvailableSpace(nextPos[0], nextPos[1]) < gamePanel.bodyParts) ? 1 : 0;
 
         int dS = dangerStraight(dir, tile) ? 1 : 0;
         int dL = dangerLeft(dir, tile) ? 1 : 0;
         int dR = dangerRight(dir, tile) ? 1 : 0;
 
+        int lookS = dangerAtDistance(dir, tile * 2) ? 1 : 0;
+        int lookL = dangerAtDistance(turnLeft(dir), tile * 2) ? 1 : 0;
+        int lookR = dangerAtDistance(turnRight(dir), tile * 2) ? 1 : 0;
 
         int appleQuad = getAppleQuadrant(headX, headY, gamePanel.getAppleX(), gamePanel.getAppleY(), dir);
 
-        int wallProx = getWallProximity(headX, headY);
+        int wallProx = getWallProximity(headX, headY); // Returns 0-3
 
-        int bodyAhead = getBodyDangerAhead(dir, tile);
-
-        int distCat = getDistanceCategory(gamePanel.getManhattanDistance());
-
-        return (isTrapped << 11) | (appleQuad << 9) | (dS << 8) | (dL << 7) | (dR << 6) |
-                (distCat << 4) | (bodyAhead << 2) | wallProx;
+        return (isTrapped << 11) | (dS << 10) | (dL << 9) | (dR << 8) |
+                (lookS << 7) | (lookL << 6) | (lookR << 5) |
+                (appleQuad << 3) | (wallProx & 0x07);
     }
+
 
 
     public int chooseAction(int state) {
@@ -78,11 +79,13 @@ public abstract class SnakeManagerAgent extends QLearningAgent {
     }
 
 
+
     public void updateQTable(int state, int action, double reward, int nextState) {
         double maxNextQ = 0;
         for (double v : qTable[nextState]) maxNextQ = Math.max(maxNextQ, v);
         qTable[state][action] += alpha * (reward + gamma * maxNextQ - qTable[state][action]);
     }
+
 
 
     public void moveRelative(int action) {
@@ -96,6 +99,7 @@ public abstract class SnakeManagerAgent extends QLearningAgent {
     }
 
 
+
     private Direction turnLeft(Direction d) {
         return switch (d) {
             case UP -> Direction.LEFT;
@@ -104,6 +108,7 @@ public abstract class SnakeManagerAgent extends QLearningAgent {
             case RIGHT -> Direction.UP;
         };
     }
+
 
 
     private Direction turnRight(Direction d) {
@@ -115,7 +120,8 @@ public abstract class SnakeManagerAgent extends QLearningAgent {
         };
     }
 
-    int[] nextPosition(int x, int y, Direction d, int t) {
+
+    protected int[] nextPosition(int x, int y, Direction d, int t) {
         return switch (d) {
             case UP -> new int[]{x, y-t};
             case DOWN -> new int[]{x, y+t};
@@ -148,10 +154,8 @@ public abstract class SnakeManagerAgent extends QLearningAgent {
         if (x < 0 || x >= gamePanel.screenWidth || y < 0 || y >= gamePanel.screenHeight) {
             return true;
         }
-        for (int i = 0; i < gamePanel.bodyParts; i++) {
-            if (x == gamePanel.snakeX[i] && y == gamePanel.snakeY[i]) {
-                return true;
-            }
+        for (int i = 0; i < gamePanel.bodyParts - 1; i++) {
+            if (x == gamePanel.snakeX[i] && y == gamePanel.snakeY[i]) return true;
         }
         return false;
     }
@@ -216,23 +220,6 @@ public abstract class SnakeManagerAgent extends QLearningAgent {
     }
 
 
-    /**
-     * Check if body is 2-3 tiles ahead (early warning)
-     */
-    private int getBodyDangerAhead(Direction dir, int tile) {
-        int headX = gamePanel.snakeX[0];
-        int headY = gamePanel.snakeY[0];
-
-        int danger = 0;
-        int[] pos2 = getPositionInDirection(headX, headY, dir, tile * 2);
-        if (isBodyAt(pos2[0], pos2[1])) danger = 2;
-
-        int[] pos3 = getPositionInDirection(headX, headY, dir, tile * 3);
-        if (isBodyAt(pos3[0], pos3[1])) danger = Math.max(danger, 1);
-
-        return danger;
-    }
-
     private int[] getPositionInDirection(int x, int y, Direction dir, int distance) {
         switch (dir) {
             case UP: return new int[]{x, y - distance};
@@ -244,13 +231,25 @@ public abstract class SnakeManagerAgent extends QLearningAgent {
     }
 
 
-    private boolean isBodyAt(int x, int y) {
-        for (int i = 1; i < gamePanel.bodyParts; i++) {
-            if (x == gamePanel.snakeX[i] && y == gamePanel.snakeY[i]) {
-                return true;
-            }
+
+    /**
+     * Check if body is 2-3 tiles ahead (early warning)
+     */
+    private boolean dangerAtDistance(Direction d, int distance) {
+        int headX = gamePanel.snakeX[0];
+        int headY = gamePanel.snakeY[0];
+
+        int checkX = headX;
+        int checkY = headY;
+
+        switch (d) {
+            case UP -> checkY -= distance;
+            case DOWN -> checkY += distance;
+            case LEFT -> checkX -= distance;
+            case RIGHT -> checkX += distance;
         }
-        return false;
+
+        return isDangerAt(checkX, checkY);
     }
 
 

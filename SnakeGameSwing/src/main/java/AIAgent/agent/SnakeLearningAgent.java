@@ -10,6 +10,7 @@ public class SnakeLearningAgent extends SnakeManagerAgent {
         super(gamePanel);
     }
 
+
     @Override
     public double performAction(int action) {
         int scoreBefore = gamePanel.getScoreFromUI();
@@ -19,45 +20,65 @@ public class SnakeLearningAgent extends SnakeManagerAgent {
 
         moveRelative(action);
 
-        if (gamePanel.checkSnakeDead()) return -200.0;
+        if (gamePanel.checkSnakeDead()) {
+            gamePanel.gameOn = false;
+            return -200.0;
+        }
 
         gamePanel.collisionChecker.checkAppleCollision();
         int scoreAfter = gamePanel.getScoreFromUI();
+
         if (scoreAfter > scoreBefore) {
-            return 50.0 + (scoreAfter * 5.0);
+            return 100.0 + (scoreAfter * 2.0);
         }
+
         double reward = 0;
         if (spaceAvailable < gamePanel.bodyParts) {
-            reward -= 10.0;
+            reward -= 15.0;
+        } else {
+            int distAfter = gamePanel.getManhattanDistance();
+            reward += (distBefore > distAfter) ? 1.0 : -1.5;
         }
-        int distAfter = gamePanel.getManhattanDistance();
-        if (spaceAvailable > gamePanel.bodyParts * 1.5) {
-            reward += (distBefore - distAfter) / 32.0;
-        }
+
         return reward - 0.05;
     }
 
     public void train() {
-        int totalEpisodes = 500000;
+        int totalEpisodes = 250000;
+        int windowSize = 500;
+        int[] scoreHistory = new int[windowSize];
+        int historyIndex = 0;
+        System.out.println("Training Started. Target Score: " + (gamePanel.gameUnits / 2));
         for (int ep = 1; ep <= totalEpisodes; ep++) {
             gamePanel.setBasics();
             int steps = 0;
-
-            while (gamePanel.gameOn && steps < 2000) {
+            while (gamePanel.gameOn && steps < 4000) {
                 int state = getState();
                 int action = chooseAction(state);
                 double reward = performAction(action);
-                updateQTable(state, action, reward, getState());
+                int nextState = gamePanel.gameOn ? getState() : state;
+                updateQTable(state, action, reward, nextState);
                 steps++;
             }
-
             int score = gamePanel.getScoreFromUI();
-            if (score > bestEver) bestEver = score;
-
-            if (ep % 500 == 0) {
-                System.out.println("Ep: " + ep + " | Best: " + bestEver + " | Stage: " + currentStage + " | Eps: " + String.format("%.3f", epsilon));
-                updateCurriculum(score);
+            scoreHistory[historyIndex % windowSize] = score;
+            historyIndex++;
+            if (score > bestEver) {
+                bestEver = score;
+            }
+            if (ep % windowSize == 0) {
+                double averageScore = 0;
+                for (int s : scoreHistory) averageScore += s;
+                averageScore /= windowSize;
+                System.out.println("--------------------------------------------------");
+                System.out.println(String.format("Ep: %d | Avg (Last 500): %.2f | Best: %d", ep, averageScore, bestEver));
+                System.out.println(String.format("Stage: %d | ε: %.3f ", currentStage, epsilon));
+                System.out.println("--------------------------------------------------");
+                updateCurriculum((int)averageScore);
                 if (epsilon > 0.01) epsilon *= 0.995;
+                if (ep % 10000 == 0) {
+                    try { saveQTable(); } catch (Exception e) { System.out.println("Save failed"); }
+                }
             }
         }
     }
