@@ -32,7 +32,7 @@ public class GamePanel extends JPanel implements ActionListener {
     public int[] snakeY;
     public Direction[] snakeDir;
 
-    Timer timer;
+    public Timer timer;
 
     public boolean gameStart = false;
     public boolean gameOn = false;
@@ -223,5 +223,9 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public boolean isSimulationMode() {
         return simulationMode;
+    }
+
+    public Timer getTimer() {
+        return timer;
     }
 }
