@@ -44,7 +44,7 @@ public class SnakeLearningAgent extends SnakeManagerAgent {
     }
 
     public void train() {
-        int totalEpisodes = 250000;
+        int totalEpisodes = 1000000;
         int windowSize = 500;
         int[] scoreHistory = new int[windowSize];
         int historyIndex = 0;
