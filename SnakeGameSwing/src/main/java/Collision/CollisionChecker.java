@@ -3,6 +3,11 @@ package Collision;
 import Entity.Apple;
 import Main.GamePanel;
 
+/**
+ * @author : Asnit Bakhati
+ *
+ */
+
 public class CollisionChecker {
     private final GamePanel panel;
     private final Apple apple;

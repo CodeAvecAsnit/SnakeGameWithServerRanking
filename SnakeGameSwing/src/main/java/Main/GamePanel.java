@@ -11,6 +11,11 @@ import java.awt.*;
 import java.awt.event.*;
 import Extra.Direction;
 
+/**
+ * @author : Asnit Bakhati
+ *
+ */
+
 public class GamePanel extends JPanel implements ActionListener {
 
     public final int maxScreenRowUnit = 25;

@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
+/**
+ * @author : Asnit Bakhati
+ *
+ */
 public abstract class QLearningAgent {
 
     protected double[][] qTable;

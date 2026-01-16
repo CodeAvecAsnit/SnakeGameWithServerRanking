@@ -4,6 +4,7 @@ import Main.GamePanel;
 import javax.swing.*;
 
 /**
+ * @author : Asnit Bakhati
  * Clean Demo GUI
  * Replicates the original game look with AI control.
  */
@@ -20,6 +21,7 @@ public class DemoGUI {
             panel = new GamePanel(false);
             if (panel.getTimer() != null) panel.getTimer().stop();
             agent = new SnakeLearningAgent(panel);
+
             try {
                 agent.loadQTable();
                 agent.epsilon = 0.0;
@@ -27,6 +29,7 @@ public class DemoGUI {
                 JOptionPane.showMessageDialog(null, "No trained model found. Please train the agent first.");
                 return;
             }
+
             JFrame frame = new JFrame("Snake Bot");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setResizable(false);
@@ -39,6 +42,7 @@ public class DemoGUI {
     }
 
     private static void startAILoop() {
+
         aiLoop = new Timer(panel.snakeSpeed, e -> {
             if (panel.gameOn) {
                 isResetting = false;

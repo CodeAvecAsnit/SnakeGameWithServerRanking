@@ -1,5 +1,10 @@
 package Entity;
 
+/**
+ * @author : Asnit Bakhati
+ *
+ */
+
 public class SnakeGame {
     Integer user_id;
     String game_username;

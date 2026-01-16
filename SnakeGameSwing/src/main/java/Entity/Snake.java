@@ -8,6 +8,10 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * @author : Asnit Bakhati
+ *
+ */
 public class Snake {
 
     private final GamePanel panel;

@@ -2,14 +2,18 @@ package AIAgent.agent;
 
 import Main.GamePanel;
 
+/**
+ * @author : Asnit Bakhati
+ */
+
 public class SnakeLearningAgent extends SnakeManagerAgent {
+
     private int currentStage = 1;
     private int bestEver = 0;
 
     public SnakeLearningAgent(GamePanel gamePanel) {
         super(gamePanel);
     }
-
 
     @Override
     public double performAction(int action) {
@@ -33,6 +37,7 @@ public class SnakeLearningAgent extends SnakeManagerAgent {
         }
 
         double reward = 0;
+
         if (spaceAvailable < gamePanel.bodyParts) {
             reward -= 15.0;
         } else {
@@ -43,12 +48,14 @@ public class SnakeLearningAgent extends SnakeManagerAgent {
         return reward - 0.05;
     }
 
+
     public void train() {
         int totalEpisodes = 1000000;
         int windowSize = 500;
         int[] scoreHistory = new int[windowSize];
         int historyIndex = 0;
         System.out.println("Training Started. Target Score: " + (gamePanel.gameUnits / 2));
+
         for (int ep = 1; ep <= totalEpisodes; ep++) {
             gamePanel.setBasics();
             int steps = 0;
@@ -60,12 +67,13 @@ public class SnakeLearningAgent extends SnakeManagerAgent {
                 updateQTable(state, action, reward, nextState);
                 steps++;
             }
+
             int score = gamePanel.getScoreFromUI();
             scoreHistory[historyIndex % windowSize] = score;
             historyIndex++;
-            if (score > bestEver) {
-                bestEver = score;
-            }
+
+            if (score > bestEver) bestEver = score;
+
             if (ep % windowSize == 0) {
                 double averageScore = 0;
                 for (int s : scoreHistory) averageScore += s;
@@ -80,8 +88,10 @@ public class SnakeLearningAgent extends SnakeManagerAgent {
                     try { saveQTable(); } catch (Exception e) { System.out.println("Save failed"); }
                 }
             }
+
         }
     }
+
 
     private void updateCurriculum(int lastScore) {
         if (currentStage == 1 && bestEver > 5) currentStage = 2;
@@ -89,6 +99,7 @@ public class SnakeLearningAgent extends SnakeManagerAgent {
         else if (currentStage == 3 && bestEver > 50) currentStage = 4;
         if (currentStage == 4) alpha = 0.05;
     }
+
 
     public static void main(String[] args) {
         GamePanel panel = new GamePanel(true);

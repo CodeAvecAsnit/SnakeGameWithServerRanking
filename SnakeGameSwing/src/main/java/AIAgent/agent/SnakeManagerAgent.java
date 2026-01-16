@@ -4,14 +4,17 @@ import AIAgent.component.QLearningAgent;
 import Extra.Direction;
 import Main.GamePanel;
 
+/**
+ * @author : Asnit Bakhati
+ */
 public abstract class SnakeManagerAgent extends QLearningAgent {
+
     public static final int STATES_SIZE = 4096;
     public static final int ACTION_SIZE = 3;
     private static final String FILE_NAME = "snakeTableVast.bin";
     protected final GamePanel gamePanel;
 
     public SnakeManagerAgent(GamePanel gamePanel) {
-
         super(0.1, 0.99, 1.0, STATES_SIZE, ACTION_SIZE, FILE_NAME);
         this.gamePanel = gamePanel;
     }
@@ -30,6 +33,7 @@ public abstract class SnakeManagerAgent extends QLearningAgent {
             int iy = gamePanel.snakeY[i] / tileSize;
             if (ix >= 0 && ix < cols && iy >= 0 && iy < rows) visited[ix][iy] = true;
         }
+
         return performFloodFill(startX / tileSize, startY / tileSize, visited);
     }
 
