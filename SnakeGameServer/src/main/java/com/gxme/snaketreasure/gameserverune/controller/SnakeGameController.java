@@ -1,9 +1,10 @@
 package com.gxme.snaketreasure.gameserverune.controller;
 
-import com.gxme.snaketreasure.gameserverune.entity.SnakeGame;
-import com.gxme.snaketreasure.gameserverune.Services.SnakeGameService;
+import com.gxme.snaketreasure.gameserverune.entity.SnakeGameUser;
+import com.gxme.snaketreasure.gameserverune.service.SnakeGameService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,13 +17,14 @@ public class SnakeGameController{
     private final SnakeGameService snakeGameService;
 
     @Autowired
-    public SnakeGameController(SnakeGameService snakeGameService) {
+    public SnakeGameController(@Qualifier("snakeGameServiceImpl")
+                                   SnakeGameService snakeGameService) {
         this.snakeGameService = snakeGameService;
     }
 
     @PostMapping("/save")
-    public ResponseEntity<String> SaveGameScore(@RequestBody SnakeGame snakeGame) {
-        if(snakeGameService.save(snakeGame)){
+    public ResponseEntity<String> SaveGameScore(@RequestBody SnakeGameUser snakeGameUser) {
+        if(snakeGameService.save(snakeGameUser)){
             return ResponseEntity.ok("Successfully build");
         }else{
             return ResponseEntity.badRequest().body("Request Timed out");
@@ -30,9 +32,9 @@ public class SnakeGameController{
     }
 
     @GetMapping("/get/top10")
-    public ResponseEntity<List<SnakeGame>> getHighScores(){
+    public ResponseEntity<List<SnakeGameUser>> getHighScores(){
         try{
-            List<SnakeGame> highScores = snakeGameService.top10();
+            List<SnakeGameUser> highScores = snakeGameService.top10();
             return ResponseEntity.ok(highScores);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -55,5 +57,4 @@ public class SnakeGameController{
     public ResponseEntity<String> checkConnection(){
         return ResponseEntity.ok("Connected");
     }
-
 }

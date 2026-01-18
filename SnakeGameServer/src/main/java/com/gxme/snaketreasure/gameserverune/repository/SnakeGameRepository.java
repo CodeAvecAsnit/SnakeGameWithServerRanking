@@ -1,18 +1,18 @@
 package com.gxme.snaketreasure.gameserverune.repository;
 
-import com.gxme.snaketreasure.gameserverune.entity.SnakeGame;
+import com.gxme.snaketreasure.gameserverune.entity.SnakeGameUser;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
-public interface SnakeGameRepository extends JpaRepository<SnakeGame, Integer> {
-    @Query(value = "Select * from snake_game order by score  desc limit 10",nativeQuery = true)
-    public List<SnakeGame> getTopScores();
+public interface SnakeGameRepository extends JpaRepository<SnakeGameUser, Integer> {
 
-    @Query(value = "SELECT user_id FROM snake_game WHERE game_username = ?1", nativeQuery = true)
-    Integer getUserId(String gameUsername);
+    List<SnakeGameUser> findTop10ByOrderByScoreDesc();
+
+    Optional<SnakeGameUser> findByGameUsername(String gameUserName);
+
 }

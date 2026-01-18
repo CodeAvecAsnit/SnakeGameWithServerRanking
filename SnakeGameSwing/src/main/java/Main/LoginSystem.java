@@ -40,10 +40,9 @@ public class LoginSystem extends JFrame {
     public LoginSystem() {
         setTitle("Snake World");
         setSize(screenWidth, screenHeight);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(3);
         setLocationRelativeTo(null);
         setResizable(false);
-
         loadImages();
 
         JPanel mainContainer = new JPanel() {
@@ -177,7 +176,7 @@ public class LoginSystem extends JFrame {
         quickPlayPanel.add(guestButton);
         quickPlayPanel.add(aiButton);
 
-        JLabel footerLabel = new JLabel("© 2025 Snake World | Choose Your Path");
+        JLabel footerLabel = new JLabel("© 2025 Snake World");
         footerLabel.setFont(new Font("Space Mono", Font.PLAIN, 11));
         footerLabel.setForeground(new Color(255, 255, 255, 120));
         footerLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -223,7 +222,6 @@ public class LoginSystem extends JFrame {
                     g2d.setColor(new Color(60, 60, 80));
                 }
                 g2d.drawRoundRect(1, 1, getWidth() - 2, getHeight() - 2, 10, 10);
-
                 super.paintComponent(g);
             }
         };
@@ -428,7 +426,7 @@ public class LoginSystem extends JFrame {
     }
 
     private void launchManualGame() {
-        JFrame frame = new JFrame("Snake Game - Manual");
+        JFrame frame = new JFrame("Snake Game");
         GamePanel panel = new GamePanel(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(panel);
