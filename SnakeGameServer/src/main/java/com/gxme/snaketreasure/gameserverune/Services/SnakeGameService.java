@@ -1,7 +1,7 @@
 package com.gxme.snaketreasure.gameserverune.Services;
 
-import com.gxme.snaketreasure.gameserverune.Entities.SnakeGame;
-import com.gxme.snaketreasure.gameserverune.Repositories.SnakeGameRepository;
+import com.gxme.snaketreasure.gameserverune.entity.SnakeGame;
+import com.gxme.snaketreasure.gameserverune.repository.SnakeGameRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -15,9 +15,9 @@ import java.nio.file.Paths;
 
 /**
  * @author : Asnit Bakhati
- * Modern Snake World Login System with enhanced UI
  */
 public class LoginSystem extends JFrame {
+
     private final JTextField usernameField;
     private final JPasswordField passwordField;
     private final JLabel messageLabel;
@@ -106,13 +106,10 @@ public class LoginSystem extends JFrame {
                 Graphics2D g2d = (Graphics2D) g;
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                         RenderingHints.VALUE_ANTIALIAS_ON);
-
                 g2d.setColor(new Color(0, 0, 0, 100));
                 g2d.fillRoundRect(5, 5, getWidth() - 5, getHeight() - 5, 20, 20);
-
                 g2d.setColor(cardBg);
                 g2d.fillRoundRect(0, 0, getWidth() - 5, getHeight() - 5, 20, 20);
-
                 g2d.setColor(accentGreen);
                 g2d.setStroke(new BasicStroke(2));
                 g2d.drawRoundRect(1, 1, getWidth() - 7, getHeight() - 7, 20, 20);
@@ -121,41 +118,32 @@ public class LoginSystem extends JFrame {
         loginCard.setLayout(null);
         loginCard.setOpaque(false);
         loginCard.setBounds(200, 230, 400, 280);
-
         JPanel userLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         userLabelPanel.setOpaque(false);
         userLabelPanel.setBounds(30, 30, 340, 24);
-
         if (appleImage != null) {
             JLabel appleIcon = new JLabel(new ImageIcon(appleImage.getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
             userLabelPanel.add(appleIcon);
         }
-
         JLabel userLabel = new JLabel("USERNAME");
         userLabel.setFont(new Font("Space Mono", Font.BOLD, 12));
         userLabel.setForeground(textLight);
         userLabelPanel.add(userLabel);
-
         usernameField = createStyledTextField();
         usernameField.setBounds(30, 58, 340, 45);
-
         JPanel passLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         passLabelPanel.setOpaque(false);
         passLabelPanel.setBounds(30, 118, 340, 24);
-
         if (trophyImage != null) {
             JLabel trophyIcon = new JLabel(new ImageIcon(trophyImage.getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
             passLabelPanel.add(trophyIcon);
         }
-
         JLabel passLabel = new JLabel("PASSWORD");
         passLabel.setFont(new Font("Space Mono", Font.BOLD, 12));
         passLabel.setForeground(textLight);
         passLabelPanel.add(passLabel);
-
         passwordField = createStyledPasswordField();
         passwordField.setBounds(30, 146, 340, 45);
-
         messageLabel = new JLabel("", SwingConstants.CENTER);
         messageLabel.setFont(new Font("Space Mono", Font.PLAIN, 12));
         messageLabel.setForeground(errorRed);

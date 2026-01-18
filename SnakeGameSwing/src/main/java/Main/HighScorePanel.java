@@ -144,7 +144,6 @@ public class HighScorePanel extends JPanel {
             listPanel.add(rowPanel);
             index++;
         }
-
         return listPanel;
     }
 }

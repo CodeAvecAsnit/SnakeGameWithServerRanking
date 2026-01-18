@@ -1,8 +1,7 @@
-package com.gxme.snaketreasure.gameserverune.Entities;
+package com.gxme.snaketreasure.gameserverune.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 
 @Data
 @Entity

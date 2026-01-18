@@ -1,6 +1,6 @@
-package com.gxme.snaketreasure.gameserverune.Repositories;
+package com.gxme.snaketreasure.gameserverune.repository;
 
-import com.gxme.snaketreasure.gameserverune.Entities.SnakeGame;
+import com.gxme.snaketreasure.gameserverune.entity.SnakeGame;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

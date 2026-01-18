@@ -1,6 +1,6 @@
-package com.gxme.snaketreasure.gameserverune.Controllers;
+package com.gxme.snaketreasure.gameserverune.controller;
 
-import com.gxme.snaketreasure.gameserverune.Entities.SnakeGame;
+import com.gxme.snaketreasure.gameserverune.entity.SnakeGame;
 import com.gxme.snaketreasure.gameserverune.Services.SnakeGameService;
 import org.springframework.beans.factory.annotation.Autowired;
 
