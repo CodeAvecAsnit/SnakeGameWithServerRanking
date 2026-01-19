@@ -100,10 +100,13 @@ public class SnakeLearningAgent extends SnakeManagerAgent {
         if (currentStage == 4) alpha = 0.05;
     }
 
+    /**
+     * uncomment this to train
+     */
 
-    public static void main(String[] args) {
-        GamePanel panel = new GamePanel(true);
-        SnakeLearningAgent agent = new SnakeLearningAgent(panel);
-        agent.train();
-    }
+//    public static void main(String[] args) {
+//        GamePanel panel = new GamePanel(true);
+//        SnakeLearningAgent agent = new SnakeLearningAgent(panel);
+//        agent.train();
+//    }
 }

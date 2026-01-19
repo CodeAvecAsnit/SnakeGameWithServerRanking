@@ -12,6 +12,8 @@ import java.awt.event.MouseEvent;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 
 /**
  * @author : Asnit Bakhati
@@ -21,7 +23,7 @@ public class LoginSystem extends JFrame {
     private final JTextField usernameField;
     private final JPasswordField passwordField;
     private final JLabel messageLabel;
-    private static final String FILE_PATH = "username.txt";
+    private DatabaseManager dbm;
 
 
     private final int screenWidth = 800;
@@ -37,7 +39,8 @@ public class LoginSystem extends JFrame {
     private Image appleImage;
     private Image trophyImage;
 
-    public LoginSystem() {
+    public LoginSystem(){
+        this.dbm = new DatabaseManager();
         setTitle("Snake World");
         setSize(screenWidth, screenHeight);
         setDefaultCloseOperation(3);
@@ -189,10 +192,9 @@ public class LoginSystem extends JFrame {
         mainContainer.add(footerLabel);
 
         add(mainContainer);
-
-        if (!Files.exists(Paths.get(FILE_PATH))) {
-            createNewUser();
-        }
+        try {
+            if (dbm.noUser()) createNewUser();
+        }catch (SQLException ex){}
     }
 
     private void loadImages() {
@@ -367,12 +369,11 @@ public class LoginSystem extends JFrame {
 
             if (username != null && !username.isEmpty() &&
                     password != null && !password.isEmpty()) {
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-                    writer.write(username + "\n" + password);
-                    new File("highscore.txt").createNewFile();
+                try {
+                    dbm.saveUser(username,password);
                     JOptionPane.showMessageDialog(this, "Account Created Successfully!",
                             "Success", JOptionPane.INFORMATION_MESSAGE);
-                } catch (IOException e) {
+                } catch (SQLException | NoSuchAlgorithmException ex) {
                     JOptionPane.showMessageDialog(this, "Error saving account.",
                             "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -386,23 +387,17 @@ public class LoginSystem extends JFrame {
             String enteredUsername = usernameField.getText();
             String enteredPassword = new String(passwordField.getPassword());
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-                String storedUsername = reader.readLine();
-                String storedPassword = reader.readLine();
-
-                if (enteredUsername.equals(storedUsername) &&
-                        enteredPassword.equals(storedPassword)) {
+            try{
+                if (dbm.checkLogin(enteredUsername,enteredPassword)){
                     messageLabel.setForeground(accentGreen);
-                    messageLabel.setText("✓ Login Successful!");
+                    messageLabel.setText("Login Successful!");
 
                     Timer timer = new Timer(500, evt -> launchManualGame());
                     timer.setRepeats(false);
                     timer.start();
                 } else {
                     messageLabel.setForeground(errorRed);
-                    messageLabel.setText("✗ Invalid credentials");
-
-                    // Shake animation
+                    messageLabel.setText("Invalid credentials");
                     Point original = getLocation();
                     Timer shakeTimer = new Timer(50, null);
                     final int[] count = {0};
@@ -418,9 +413,9 @@ public class LoginSystem extends JFrame {
                     });
                     shakeTimer.start();
                 }
-            } catch (IOException ex) {
+            } catch (SQLException | NoSuchAlgorithmException ex) {
                 messageLabel.setForeground(errorRed);
-                messageLabel.setText("✗ Error reading user data");
+                messageLabel.setText("Error reading user data");
             }
         }
     }
@@ -443,7 +438,6 @@ public class LoginSystem extends JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         SwingUtilities.invokeLater(() -> new LoginSystem().setVisible(true));
     }
 }

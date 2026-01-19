@@ -1,6 +1,6 @@
 package Main;
 
-import Entity.SnakeGame;
+import Entity.SnakeGameUser;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -36,7 +36,7 @@ public class HighScorePanel extends JPanel {
         setBackground(new Color(45, 45, 45)); // Dark background
 
         // Fetch and display high scores
-        List<SnakeGame> highScores = fetchHighScores();
+        List<SnakeGameUser> highScores = fetchHighScores();
         add(createHighScoreList(highScores), BorderLayout.CENTER);
 
         // Start Game Button
@@ -64,7 +64,7 @@ public class HighScorePanel extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    private List<SnakeGame> fetchHighScores() {
+    private List<SnakeGameUser> fetchHighScores() {
         try {
             URL url = new URL("http://localhost:8080/api/snakeGame/get/top10");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -79,13 +79,13 @@ public class HighScorePanel extends JPanel {
             reader.close();
 
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(response.toString(), new TypeReference<List<SnakeGame>>() {});
+            return objectMapper.readValue(response.toString(), new TypeReference<List<SnakeGameUser>>() {});
         } catch (Exception e) {
             return null;
         }
     }
 
-    private JPanel createHighScoreList(List<SnakeGame> highScores) {
+    private JPanel createHighScoreList(List<SnakeGameUser> highScores) {
         JPanel listPanel = new JPanel();
         listPanel.setLayout(new GridLayout(highScores.size() + 2, 1)); // +2 for title and header
         listPanel.setBackground(new Color(45, 45, 45));
@@ -121,12 +121,12 @@ public class HighScorePanel extends JPanel {
 
         // Adding High Score List
         int index = 1;
-        for (SnakeGame game : highScores) {
+        for (SnakeGameUser game : highScores) {
             JPanel rowPanel = new JPanel(new GridLayout(1, 3));
             rowPanel.setBackground(index % 2 == 0 ? new Color(60, 60, 60) : new Color(50, 50, 50));
 
             JLabel snoLabel = new JLabel(String.valueOf(index), SwingConstants.CENTER);
-            JLabel userLabel = new JLabel(game.getGame_username(), SwingConstants.CENTER);
+            JLabel userLabel = new JLabel(game.getGameUsername(), SwingConstants.CENTER);
             JLabel scoreLabel = new JLabel(String.valueOf(game.getScore()), SwingConstants.CENTER);
 
             snoLabel.setFont(new Font("Arial", Font.PLAIN, 14));
