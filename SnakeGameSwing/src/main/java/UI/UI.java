@@ -1,5 +1,7 @@
 package UI;
 
+import Main.APIRequest;
+import Main.DatabaseManager;
 import Main.GamePanel;
 
 import javax.imageio.ImageIO;
@@ -7,16 +9,12 @@ import java.awt.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Scanner;
 
 /**
  * @author : Asnit Bakhati
  */
 public class UI {
 
-    private static final String FILE_PATH = "highScore.bin";
-
-    //main singleton gamePanel
     private final GamePanel panel;
 
     //image of the apple
@@ -25,7 +23,7 @@ public class UI {
     //image of the trophy
     private Image trophy;
 
-    private int trophyEarned ;
+    private int trophyEarned;
 
     private int score;
 
@@ -33,35 +31,26 @@ public class UI {
 
     private Font font;
 
+    private DatabaseManager dbm;
+
     public UI(GamePanel panel) {
-        this.score =  0 ;
+        this.score = 0;
         this.panel = panel;
+        this.dbm = new DatabaseManager();
         font = new Font("Space Mono", Font.BOLD, 23);
         setImage();
         this.trophyEarned = getTrophyEarned();
     }
 
     public int getTrophyEarned() {
-        File file = new File("highScore.bin");
-        //check if file exists or not
-        if (!file.exists()) {
-            try{
-                writeInFile(0);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return 0;
-        }
-
-        //read this file if it exists
-        try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
-            return dis.readInt();
-        } catch (IOException e) {
+        try {
+            return dbm.getHighScore();
+        } catch (Exception e) {
+            e.printStackTrace();
             return 0;
         }
     }
 
-    //set the image for apple(different from apple in game) and trophy
     public void setImage() {
         try {
             apple = ImageIO.read(getClass().getClassLoader().getResourceAsStream("apple/apple.png"));
@@ -71,7 +60,7 @@ public class UI {
         }
     }
 
-    //Used Swings inbuilt feature
+
     public void draw(Graphics2D graphics2D) {
         graphics2D.setColor(Color.WHITE);
         graphics2D.setFont(font);
@@ -80,24 +69,17 @@ public class UI {
         graphics2D.drawString(" " + panel.getAppleEatenFromCollision(),
                 panel.tileSize + panel.tileSize / 4,
                 panel.tileSize - 2);
-        //When game is off means user is out
+
         if (!panel.gameOn) {
             int currentTrophy = panel.getAppleEatenFromCollision();
-            if (currentTrophy> trophyEarned) {
-                //get the amount of trophy earned
+            if (currentTrophy > trophyEarned) {
                 trophyEarned = currentTrophy;
                 try {
-                    File file = new File("username.txt");
-                    Scanner scanner = new Scanner(file);
-                    String username = scanner.hasNextLine()?scanner.nextLine().trim():null;
+                    String username = dbm.getStoredUsername();
                     sendPutRequest(username, trophyEarned);
-                }catch (Exception ex){
-                    System.out.println(ex.getMessage());
-                }
-                try {
-                    writeInFile(trophyEarned);
-                }catch (IOException ex){
-
+                    saveHighScore(trophyEarned);
+                } catch (Exception ex) {
+                    System.out.println("Error updating score: " + ex.getMessage());
                 }
             }
             if (!scoreSet) {
@@ -117,10 +99,10 @@ public class UI {
                 panel.tileSize - 2);
     }
 
-    //migrate this later to another class //for saving game highscore in the server.
+
     private void sendPutRequest(String username, int score) {
         try {
-            String urlString = "http://localhost:8080/api/snakeGame/update/" + username + "," + score;
+            String urlString = APIRequest.baseURL + "api/snakeGame/update/" + username + "," + score;
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -138,18 +120,21 @@ public class UI {
             }
             conn.disconnect();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error sending PUT request: " + e.getMessage());
         }
     }
 
     public int getScore() {
-        // CRITICAL FIX: Always return score from collision checker, not a separate variable
         return panel.getAppleEatenFromCollision();
     }
 
-    // Write in the binary File
-    private void writeInFile(int value) throws IOException {
-        DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(FILE_PATH)));
-        dos.writeInt(value);
+
+    private void saveHighScore(int value) {
+        try {
+            dbm.updateHighScore(value);
+        } catch (Exception e) {
+            System.out.println("Error saving high score: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

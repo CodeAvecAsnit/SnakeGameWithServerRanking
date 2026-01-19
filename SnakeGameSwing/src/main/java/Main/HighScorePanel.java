@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -17,15 +18,13 @@ import java.io.InputStreamReader;
  * @author : Asnit Bakhati
  *
  */
-
-//Ignore this part for now. Update this part while working on server connection.
 public class HighScorePanel extends JPanel {
     private final int screenWidth;
     private final int screenHeight;
     private JFrame frame;
     private GamePanel gamePanel;
 
-    public HighScorePanel(int screenWidth, int screenHeight, JFrame frame, GamePanel gamePanel) {
+    public HighScorePanel(int screenWidth, int screenHeight, JFrame frame, GamePanel gamePanel) throws RuntimeException{
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.frame = frame;
@@ -33,20 +32,17 @@ public class HighScorePanel extends JPanel {
 
         setPreferredSize(new Dimension(screenWidth, screenHeight));
         setLayout(new BorderLayout());
-        setBackground(new Color(45, 45, 45)); // Dark background
+        setBackground(new Color(45, 45, 45));
 
-        // Fetch and display high scores
         List<SnakeGameUser> highScores = fetchHighScores();
         add(createHighScoreList(highScores), BorderLayout.CENTER);
 
-        // Start Game Button
         JButton startButton = new JButton("Start Game");
         startButton.setFont(new Font("Arial", Font.BOLD, 14));
         startButton.setForeground(Color.WHITE);
-        startButton.setBackground(new Color(70, 130, 180)); // Steel Blue
+        startButton.setBackground(new Color(70, 130, 180));
         startButton.setFocusPainted(false);
         startButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -58,7 +54,7 @@ public class HighScorePanel extends JPanel {
         });
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setBackground(new Color(45, 45, 45)); // Dark background
+        buttonPanel.setBackground(new Color(45, 45, 45));
         buttonPanel.add(startButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
@@ -66,9 +62,17 @@ public class HighScorePanel extends JPanel {
 
     private List<SnakeGameUser> fetchHighScores() {
         try {
-            URL url = new URL("http://localhost:8080/api/snakeGame/get/top10");
+            URL url = new URL(APIRequest.baseURL+"api/snakeGame/get/top10");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode != 200) {
+                System.err.println("Server returned error code: " + responseCode);
+                return new ArrayList<>();
+            }
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuilder response = new StringBuilder();
@@ -77,27 +81,36 @@ public class HighScorePanel extends JPanel {
                 response.append(line);
             }
             reader.close();
+            conn.disconnect();
 
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(response.toString(), new TypeReference<List<SnakeGameUser>>() {});
+            List<SnakeGameUser> scores = objectMapper.readValue(response.toString(), new TypeReference<List<SnakeGameUser>>() {});
+            return scores != null ? scores : new ArrayList<>();
+
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException("Cannot load HighScores.");
         }
     }
 
     private JPanel createHighScoreList(List<SnakeGameUser> highScores) {
         JPanel listPanel = new JPanel();
+        if (highScores == null || highScores.isEmpty()) {
+            listPanel.setLayout(new BorderLayout());
+            listPanel.setBackground(new Color(45, 45, 45));
+            JLabel noDataLabel = new JLabel("No high scores available. Server might be offline.", SwingConstants.CENTER);
+            noDataLabel.setFont(new Font("Arial", Font.BOLD, 16));
+            noDataLabel.setForeground(Color.WHITE);
+            listPanel.add(noDataLabel, BorderLayout.CENTER);
+            return listPanel;
+        }
         listPanel.setLayout(new GridLayout(highScores.size() + 2, 1)); // +2 for title and header
         listPanel.setBackground(new Color(45, 45, 45));
-
-        // Title Label
-        JLabel titleLabel = new JLabel("Top 10 High Scores", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("High Scores", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         listPanel.add(titleLabel);
 
-        // Header Row: S.No | Username | Score
         JPanel headerPanel = new JPanel(new GridLayout(1, 3));
         headerPanel.setBackground(new Color(70, 70, 70));
 
@@ -119,7 +132,6 @@ public class HighScorePanel extends JPanel {
 
         listPanel.add(headerPanel);
 
-        // Adding High Score List
         int index = 1;
         for (SnakeGameUser game : highScores) {
             JPanel rowPanel = new JPanel(new GridLayout(1, 3));

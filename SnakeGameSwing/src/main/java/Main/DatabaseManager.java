@@ -16,9 +16,11 @@ public class DatabaseManager {
         initializeDatabase();
     }
 
+
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DbUrl);
     }
+
 
     public void initializeDatabase(){
         try (Connection conn = getConnection();
@@ -27,12 +29,21 @@ public class DatabaseManager {
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "name TEXT NOT NULL UNIQUE," +
                     "password TEXT NOT NULL)";
+
+            String sql2 = "CREATE TABLE IF NOT EXISTS score (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "highscore INTEGER NOT NULL DEFAULT 0)";
+
             stmt.execute(sql);
+            stmt.execute(sql2);
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+
+
 
     public void saveUser(String userName, String password) throws SQLException, NoSuchAlgorithmException {
         if (password.length() < 8) {
@@ -48,6 +59,7 @@ public class DatabaseManager {
             st.setString(2, hashedPass);
             st.executeUpdate();
         }
+        initializeScore();
     }
 
     public boolean checkLogin(String userName, String password) throws SQLException, NoSuchAlgorithmException {
@@ -68,6 +80,8 @@ public class DatabaseManager {
         }
     }
 
+
+
     public String hashString(String input) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] passHash = md.digest(input.getBytes(StandardCharsets.UTF_8));
@@ -79,6 +93,8 @@ public class DatabaseManager {
         }
         return sb.toString();
     }
+
+
 
     public boolean noUser() throws SQLException {
         String sql = "SELECT COUNT(*) as count FROM users";
@@ -92,22 +108,62 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * test code
-     */
 
-//    public static void main(String[] args) {
-//        DatabaseManager dbm = new DatabaseManager();
-//        try {
-//            if(dbm.checkLogin("Mobile","MobileUser123")) System.out.println("Success");
-//            else System.out.println("Failed");
-//            if(dbm.checkLogin("Mobile","RandomPass")) System.out.println("Failed");
-//            else System.out.println("Success");
-//
-//            if(dbm.checkLogin("Monley","HenlyeTshirt")) System.out.println("Failed");
-//            System.out.println("Success");
-//        }catch (Exception ex){
-//            System.out.println("Some Exception Occurred");
-//        }
-//    }
+
+    public String getStoredUsername() throws SQLException {
+        String sql = "SELECT name FROM users LIMIT 1";
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getString("name");
+            }
+            return null;
+        }
+    }
+
+
+    private void initializeScore() throws SQLException {
+        String sql = "INSERT INTO score (highscore) VALUES (0)";
+        try (Connection conn = getConnection();
+             PreparedStatement st = conn.prepareStatement(sql)) {
+            st.executeUpdate();
+        }
+    }
+
+
+    public int getHighScore() throws SQLException {
+        String sql = "SELECT highscore FROM score LIMIT 1";
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt("highscore");
+            }
+            return 0;
+        }
+    }
+
+
+    public void updateHighScore(int newScore) throws SQLException {
+        String checkSql = "SELECT COUNT(*) as count FROM score";
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(checkSql)) {
+
+            if (rs.next() && rs.getInt("count") == 0) {
+                String insertSql = "INSERT INTO score (highscore) VALUES (?)";
+                try (PreparedStatement st = conn.prepareStatement(insertSql)) {
+                    st.setInt(1, newScore);
+                    st.executeUpdate();
+                }
+            } else {
+                String updateSql = "UPDATE score SET highscore = ? WHERE id = 1";
+                try (PreparedStatement st = conn.prepareStatement(updateSql)) {
+                    st.setInt(1, newScore);
+                    st.executeUpdate();
+                }
+            }
+        }
+    }
 }
