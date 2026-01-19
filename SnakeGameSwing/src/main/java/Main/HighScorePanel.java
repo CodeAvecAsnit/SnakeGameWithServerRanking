@@ -5,14 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.type.TypeReference;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 /**
  * @author : Asnit Bakhati
@@ -34,8 +27,10 @@ public class HighScorePanel extends JPanel {
         setLayout(new BorderLayout());
         setBackground(new Color(45, 45, 45));
 
-        List<SnakeGameUser> highScores = fetchHighScores();
-        add(createHighScoreList(highScores), BorderLayout.CENTER);
+        try {
+            List<SnakeGameUser> highScores = APIRequest.fetchHighScores();
+            add(createHighScoreList(highScores), BorderLayout.CENTER);
+        }catch (RuntimeException ex){}
 
         JButton startButton = new JButton("Start Game");
         startButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -60,37 +55,6 @@ public class HighScorePanel extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    private List<SnakeGameUser> fetchHighScores() {
-        try {
-            URL url = new URL(APIRequest.baseURL+"api/snakeGame/get/top10");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
-
-            int responseCode = conn.getResponseCode();
-            if (responseCode != 200) {
-                System.err.println("Server returned error code: " + responseCode);
-                return new ArrayList<>();
-            }
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
-            }
-            reader.close();
-            conn.disconnect();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            List<SnakeGameUser> scores = objectMapper.readValue(response.toString(), new TypeReference<List<SnakeGameUser>>() {});
-            return scores != null ? scores : new ArrayList<>();
-
-        } catch (Exception e) {
-            throw new RuntimeException("Cannot load HighScores.");
-        }
-    }
 
     private JPanel createHighScoreList(List<SnakeGameUser> highScores) {
         JPanel listPanel = new JPanel();

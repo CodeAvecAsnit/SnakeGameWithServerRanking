@@ -151,7 +151,6 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void draw(Graphics graphics) {
         if (simulationMode) return;
-
         Graphics2D graphics2D = (Graphics2D) graphics;
         manager.draw(graphics2D);
         if (gameOn) {
@@ -168,21 +167,44 @@ public class GamePanel extends JPanel implements ActionListener {
         if (simulationMode) return;
 
         if (gameStart && gameOn) {
-            timer.setDelay(snakeSpeed);
             move();
-            collisionChecker.checkAppleCollision();
             if (collisionChecker.isSnakeDead()) {
                 gameOn = false;
+                ui.handleGameOverScore();
                 apple.setAppleStart();
+                SwingUtilities.invokeLater(() -> {
+                    showHighScoreScreen();
+                });
+            } else {
+                collisionChecker.checkAppleCollision();
             }
         }
         repaint();
     }
 
-    public void simulationStep() {
-        if (!simulationMode) {
-            throw new IllegalStateException("simulationStep() can only be called in simulation mode");
-        }
+    private void showHighScoreScreen() {
+        new Thread(() -> {
+            boolean connected = APIRequest.isServerAvailable();
+            SwingUtilities.invokeLater(() -> {
+                if (connected) {
+                    try {
+                        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+                        if (frame != null) {
+                            HighScorePanel highscorePanel = new HighScorePanel(screenWidth, screenHeight, frame, this);
+                            frame.setContentPane(highscorePanel);
+                            frame.revalidate();
+                            frame.repaint();
+                        }
+                    } catch (Exception ex) {
+                        gameOn = false;
+                        repaint();
+                    }
+                } else {
+                    gameOn = false;
+                    repaint();
+                }
+            });
+        }).start();
     }
 
     public int getScoreFromUI() {

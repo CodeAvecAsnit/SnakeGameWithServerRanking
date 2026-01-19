@@ -16,7 +16,7 @@ public class DemoGUI {
     private static int gamesPlayed = 0;
     private static boolean isResetting = false;
 
-    public static void main(String[] args) {
+    public void loadGame() {
         SwingUtilities.invokeLater(() -> {
             panel = new GamePanel(false);
             if (panel.getTimer() != null) panel.getTimer().stop();
@@ -41,7 +41,7 @@ public class DemoGUI {
         });
     }
 
-    private static void startAILoop() {
+    private void startAILoop() {
 
         aiLoop = new Timer(panel.snakeSpeed, e -> {
             if (panel.gameOn) {

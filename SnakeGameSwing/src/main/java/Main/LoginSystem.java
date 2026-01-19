@@ -10,8 +10,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
@@ -173,7 +171,7 @@ public class LoginSystem extends JFrame {
         guestButton.addActionListener(e -> launchManualGame());
         aiButton.addActionListener(e -> {
             this.dispose();
-            DemoGUI.main(new String[0]);
+            new DemoGUI().loadGame();
         });
 
         quickPlayPanel.add(guestButton);

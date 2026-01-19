@@ -1,7 +1,6 @@
 package Extra;
 
 import Main.GamePanel;
-import Main.HighScorePanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,30 +20,25 @@ public class GameOver {
         this.tryAgainFont = new Font("Space Mono", Font.PLAIN, 20);
     }
 
-
-    //draw game over graphic
     public void draw(Graphics2D graphics2D, int width, int height) {
-        try {
-            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(gamePanel);
-            if (frame != null) {
-                frame.setContentPane(new HighScorePanel(width, height, frame, gamePanel));
-                frame.revalidate();
-                frame.repaint();
-            }
-        }catch (Exception ex){
-            graphics2D.setColor(Color.WHITE);
-            graphics2D.setFont(scoreFont);
-            FontMetrics metrics1 = gamePanel.getFontMetrics(graphics2D.getFont());
-            graphics2D.drawString("Score : " + gamePanel.getScoreFromUI(), (gamePanel.screenWidth - metrics1.stringWidth("Score : " + gamePanel.getScoreFromUI())) / 2, gamePanel.tileSize * 6);
+        graphics2D.setColor(new Color(0, 0, 0, 150));
+        graphics2D.fillRect(0, 0, width, height);
 
-            graphics2D.setColor(Color.RED);
-            FontMetrics metrics2 = gamePanel.getFontMetrics(graphics2D.getFont());
-            graphics2D.drawString("GAME OVER", (gamePanel.screenWidth - metrics2.stringWidth("GAME OVER")) / 2, gamePanel.screenHeight / 2);
+        graphics2D.setColor(Color.WHITE);
+        graphics2D.setFont(scoreFont);
+        String scoreText = "Final Score: " + gamePanel.getAppleEatenFromCollision();
+        int xScore = (gamePanel.screenWidth - graphics2D.getFontMetrics().stringWidth(scoreText)) / 2;
+        graphics2D.drawString(scoreText, xScore, gamePanel.tileSize * 6);
 
-            graphics2D.setColor(Color.YELLOW);
-            graphics2D.setFont(tryAgainFont);
-            FontMetrics metrics3 = gamePanel.getFontMetrics(graphics2D.getFont());
-            graphics2D.drawString("press SPACE to play again", (gamePanel.screenWidth - metrics3.stringWidth("press SPACE to play again")) / 2, gamePanel.tileSize * 17);
-        }
+        graphics2D.setColor(Color.RED);
+        String msg = "GAME OVER";
+        int xMsg = (gamePanel.screenWidth - graphics2D.getFontMetrics().stringWidth(msg)) / 2;
+        graphics2D.drawString(msg, xMsg, gamePanel.screenHeight / 2);
+
+        graphics2D.setColor(Color.YELLOW);
+        graphics2D.setFont(tryAgainFont);
+        String retry = "Press SPACE to Play Again";
+        int xRetry = (gamePanel.screenWidth - graphics2D.getFontMetrics().stringWidth(retry)) / 2;
+        graphics2D.drawString(retry, xRetry, gamePanel.tileSize * 17);
     }
 }

@@ -7,8 +7,6 @@ import Main.GamePanel;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * @author : Asnit Bakhati
@@ -61,73 +59,40 @@ public class UI {
     }
 
 
+
     public void draw(Graphics2D graphics2D) {
         graphics2D.setColor(Color.WHITE);
         graphics2D.setFont(font);
 
         graphics2D.drawImage(apple, panel.tileSize / 2, panel.tileSize / 4, panel.tileSize - 8, panel.tileSize - 8, null);
         graphics2D.drawString(" " + panel.getAppleEatenFromCollision(),
-                panel.tileSize + panel.tileSize / 4,
-                panel.tileSize - 2);
+                panel.tileSize + panel.tileSize / 4, panel.tileSize - 2);
 
-        if (!panel.gameOn) {
-            int currentTrophy = panel.getAppleEatenFromCollision();
-            if (currentTrophy > trophyEarned) {
-                trophyEarned = currentTrophy;
-                try {
-                    String username = dbm.getStoredUsername();
-                    sendPutRequest(username, trophyEarned);
-                    saveHighScore(trophyEarned);
-                } catch (Exception ex) {
-                    System.out.println("Error updating score: " + ex.getMessage());
-                }
-            }
-            if (!scoreSet) {
-                score = currentTrophy;
-                scoreSet = true;
-            }
-            panel.setAppleEatenFromCollision(0);
-        } else {
-            score = 0;
-            scoreSet = false;
-        }
-        graphics2D.drawImage(trophy,
-                panel.tileSize * 4, panel.tileSize / 4,
-                panel.tileSize - 8, panel.tileSize - 8, null);
-        graphics2D.drawString(" " + trophyEarned,
-                4 * panel.tileSize + panel.tileSize - 9,
-                panel.tileSize - 2);
+        graphics2D.drawImage(trophy, panel.tileSize * 4, panel.tileSize / 4, panel.tileSize - 8, panel.tileSize - 8, null);
+        graphics2D.drawString(" " + trophyEarned, 4 * panel.tileSize + panel.tileSize - 9, panel.tileSize - 2);
     }
 
 
-    private void sendPutRequest(String username, int score) {
-        try {
-            String urlString = APIRequest.baseURL + "api/snakeGame/update/" + username + "," + score;
-            URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    public void handleGameOverScore() {
+        int currentScore = panel.getAppleEatenFromCollision();
 
-            conn.setRequestMethod("PUT");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setDoOutput(true);
-
-            int responseCode = conn.getResponseCode();
-            System.out.println("PUT Response Code: " + responseCode);
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                System.out.println("Score updated successfully!");
-            } else {
-                System.out.println("Failed to update score.");
-            }
-            conn.disconnect();
-        } catch (Exception e) {
-            System.out.println("Error sending PUT request: " + e.getMessage());
+        if (currentScore > trophyEarned) {
+            trophyEarned = currentScore;
+            saveHighScore(trophyEarned);
         }
+        new Thread(() -> {
+            try {
+                String username = dbm.getStoredUsername();
+                APIRequest.sendPutRequest(username, trophyEarned);
+            } catch (Exception ex) {
+                System.out.println("Server unreachable, score saved locally only.");
+            }
+        }).start();
     }
 
     public int getScore() {
         return panel.getAppleEatenFromCollision();
     }
-
 
     private void saveHighScore(int value) {
         try {
