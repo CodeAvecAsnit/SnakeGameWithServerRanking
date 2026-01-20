@@ -14,4 +14,6 @@ public interface SnakeGameService {
 
     @Transactional
     void update(String username, int score) throws Exception;
+
+    boolean verifySign(String username,String sign, int score);
 }

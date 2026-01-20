@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game - Hall of Fame</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Marcellus&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #14141e;
+            color: #ffffff;
+            font-family: 'Space Mono', monospace;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #14141e;
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03) 0px, transparent 1px, transparent 32px, rgba(255, 255, 255, 0.03) 33px),
+                    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0px, transparent 1px, transparent 32px, rgba(255, 255, 255, 0.03) 33px);
+            z-index: -1;
+        }
+
+        .navbar {
+            background-color: rgba(35, 35, 50, 0.9) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #00ff7f;
+        }
+
+        .navbar-brand {
+            font-family: 'Marcellus', serif;
+            font-size: 1.75rem;
+            color: #00ff7f !important;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(0, 255, 127, 0.5);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #00ff7f 0%, #00cc66 100%);
+            border: none;
+            color: #14141e;
+            font-weight: 700;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 255, 127, 0.3);
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 127, 0.5);
+            color: #14141e;
+        }
+
+        .leaderboard-card {
+            background: rgba(35, 35, 50, 0.8);
+            border: 2px solid #00ff7f;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 255, 127, 0.2);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .leaderboard-title {
+            font-family: 'Marcellus', serif;
+            font-size: 2.5rem;
+            color: #00ff7f;
+            text-shadow: 0 0 20px rgba(0, 255, 127, 0.5);
+            margin-bottom: 1rem;
+        }
+
+        .leaderboard-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .table-container {
+            background: rgba(20, 20, 30, 0.6);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .leaderboard-table {
+            color: #ffffff;
+        }
+
+        .leaderboard-table thead {
+            background: linear-gradient(135deg, #00ff7f 0%, #00cc66 100%);
+            color: #14141e;
+        }
+
+        .leaderboard-table thead th {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 1rem;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .leaderboard-table tbody tr {
+            background: rgba(35, 35, 50, 0.4);
+            border-bottom: 1px solid rgba(0, 255, 127, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .leaderboard-table tbody tr:hover {
+            background: rgba(0, 255, 127, 0.1);
+            transform: translateX(5px);
+        }
+
+        .leaderboard-table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border: none;
+        }
+
+        .rank-badge {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .rank-1 {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #14141e;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .rank-2 {
+            background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+            color: #14141e;
+            box-shadow: 0 0 20px rgba(192, 192, 192, 0.5);
+        }
+
+        .rank-3 {
+            background: linear-gradient(135deg, #cd7f32 0%, #e9a968 100%);
+            color: #14141e;
+            box-shadow: 0 0 20px rgba(205, 127, 50, 0.5);
+        }
+
+        .rank-default {
+            background: rgba(0, 255, 127, 0.2);
+            color: #00ff7f;
+            border: 2px solid #00ff7f;
+        }
+
+        .score-badge {
+            background: linear-gradient(135deg, #00ff7f 0%, #00cc66 100%);
+            color: #14141e;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0, 255, 127, 0.3);
+        }
+
+        .username-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(0, 255, 127, 0.1);
+            border-top: 4px solid #00ff7f;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(255, 71, 87, 0.2);
+            border: 2px solid #ff4757;
+            border-radius: 10px;
+            padding: 1.5rem;
+            color: #ff4757;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        footer {
+            background: rgba(20, 20, 30, 0.8);
+            border-top: 2px solid #00ff7f;
+            margin-top: 4rem;
+            padding: 2rem 0;
+        }
+
+        footer p {
+            color: rgba(255, 255, 255, 0.6);
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand" href="index.html2"> SNAKE GAME</a>
+        <button class="btn btn-download" onclick="downloadGame()">
+             Download Game
+        </button>
+    </div>
+</nav>
+
+<main>
+    <section class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="leaderboard-card p-5">
+                    <h1 class="leaderboard-title text-center">🏆 Top 10 Players</h1>
+                    <p class="leaderboard-subtitle text-center">Hall of Fame - Best Snake Masters</p>
+
+                    <div id="loadingContainer" class="text-center">
+                        <div class="loading-spinner"></div>
+                        <p class="mt-3">Loading leaderboard...</p>
+                    </div>
+
+                    <div id="errorContainer" class="d-none">
+                        <div class="error-message">
+                            <h4>⚠️ Unable to Load Leaderboard</h4>
+                            <p id="errorMessage">Could not connect to the server. Please try again later.</p>
+                        </div>
+                    </div>
+
+                    <div id="tableContainer" class="table-container d-none">
+                        <div class="table-responsive">
+                            <table class="table leaderboard-table">
+                                <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Player</th>
+                                    <th>Score</th>
+                                </tr>
+                                </thead>
+                                <tbody id="leaderboardBody">
+                                <!-- Data will be inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="emptyContainer" class="empty-state d-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                        </svg>
+                        <h3>No Players Yet</h3>
+                        <p>Be the first to join the leaderboard!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p>© 2026 CodeAvecAsnit. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+
+<script>
+    const API_BASE_URL = 'http://localhost:8080/';
+    const LEADERBOARD_ENDPOINT = API_BASE_URL + 'api/snakeGame/get/top10';
+
+    const loadingContainer = document.getElementById('loadingContainer');
+    const errorContainer = document.getElementById('errorContainer');
+    const errorMessage = document.getElementById('errorMessage');
+    const tableContainer = document.getElementById('tableContainer');
+    const emptyContainer = document.getElementById('emptyContainer');
+    const leaderboardBody = document.getElementById('leaderboardBody');
+
+    async function fetchLeaderboard() {
+        try {
+            const response = await fetch(LEADERBOARD_ENDPOINT, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server returned error code: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            loadingContainer.classList.add('d-none');
+
+            if (!data || data.length === 0) {
+                emptyContainer.classList.remove('d-none');
+            } else {
+                displayLeaderboard(data);
+                tableContainer.classList.remove('d-none');
+            }
+        } catch (error) {
+            console.error('Error fetching leaderboard:', error);
+            loadingContainer.classList.add('d-none');
+            errorMessage.textContent = error.message || 'Could not connect to the server. Please try again later.';
+            errorContainer.classList.remove('d-none');
+        }
+    }
+
+    function displayLeaderboard(players) {
+        leaderboardBody.innerHTML = '';
+
+        players.forEach((player, index) => {
+            const rank = index + 1;
+            const row = document.createElement('tr');
+            let rankClass = 'rank-default';
+            if (rank === 1) rankClass = 'rank-1';
+            else if (rank === 2) rankClass = 'rank-2';
+            else if (rank === 3) rankClass = 'rank-3';
+
+            row.innerHTML = `
+                    <td>
+                        <span class="rank-badge ${rankClass}">${rank}</span>
+                    </td>
+                    <td>
+                        <span class="username-text">${escapeHtml(player.gameUsername)}</span>
+                    </td>
+                    <td>
+                        <span class="score-badge">${player.score}</span>
+                    </td>
+                `;
+
+            leaderboardBody.appendChild(row);
+        });
+    }
+
+    function downloadGame() {
+        const link = document.createElement('a');
+        link.href = 'SnakeGame.jar';
+        link.download = 'SnakeGame.jar';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    window.addEventListener('DOMContentLoaded', fetchLeaderboard);
+    setInterval(fetchLeaderboard, 30000);
+</script>
+</body>
+</html>

@@ -22,5 +22,4 @@ public class SnakeGameUser {
 
     @Column
     private Integer score;
-
 }

@@ -6,6 +6,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,11 +50,38 @@ public class SnakeGameServiceImpl implements SnakeGameService {
             user.setGameUsername(username);
             user.setScore(score);
         } else {
-            SnakeGameUser existingUser = gameUser.get();
-            if(existingUser.getScore()>score){
+            user = gameUser.get();
+            if(score>user.getScore()){
                 user.setScore(score);
-            }
+            }else return;
         }
         snakeGameRepository.save(user);
+    }
+
+    private static String getDigitalSignature(String username, int score) {
+        try {
+            String key = "QxyEWs0GCS7YAb0XklnEteVnVLe1ZrQoQ2L2vyXeR3k=";
+            String toHash = "username : " + username + " , score : " + score;
+
+            Mac mac = Mac.getInstance("HmacSHA256");
+            SecretKey secretKey = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+            mac.init(secretKey);
+
+            byte[] bytes = mac.doFinal(toHash.getBytes(StandardCharsets.UTF_8));
+            StringBuilder ans = new StringBuilder();
+            for (byte b : bytes) {
+                ans.append(String.format("%02x", b));
+            }
+            return ans.toString();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+
+    @Override
+    public boolean verifySign(String username, String sign, int score) {
+        String currSign = getDigitalSignature(username,score);
+        return currSign==sign || currSign.equals(sign);
     }
 }

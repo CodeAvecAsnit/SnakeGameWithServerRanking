@@ -2,6 +2,8 @@ package com.gxme.snaketreasure.gameserverune.controller;
 
 import com.gxme.snaketreasure.gameserverune.entity.SnakeGameUser;
 import com.gxme.snaketreasure.gameserverune.service.SnakeGameService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,6 +16,7 @@ import java.util.List;
 @RequestMapping("/api/snakeGame")
 public class SnakeGameController{
 
+    private final Logger log = LoggerFactory.getLogger(SnakeGameController.class);
     private final SnakeGameService snakeGameService;
 
     @Autowired
@@ -41,16 +44,22 @@ public class SnakeGameController{
             return ResponseEntity.badRequest().body(null);
         }
     }
+    @PutMapping("/update/{username}/{score}")
+    public ResponseEntity<String> updateHighScores(
+            @PathVariable String username,
+            @PathVariable Integer score,
+            @RequestParam String sign) {
 
-    @PutMapping("/update/{username},{score}")
-    public ResponseEntity<String> updateHighScores(@PathVariable Integer score,@PathVariable String username){
-        try{
-            snakeGameService.update(username,score);
-            return ResponseEntity.ok("Success");
-        }catch (Exception ex){
-            System.out.println(ex.getMessage());
-            return ResponseEntity.badRequest().build();
-        }
+        log.debug("Request received for: {} with score: {}", username, score);
+
+        if(snakeGameService.verifySign(username, sign, score)) {
+            try {
+                snakeGameService.update(username, score);
+                return ResponseEntity.ok("Success");
+            } catch (Exception ex) {
+                return ResponseEntity.badRequest().body(ex.getMessage());
+            }
+        } else return ResponseEntity.status(401).body("Invalid Signature");
     }
 
     @GetMapping("/connect")
