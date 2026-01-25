@@ -27,16 +27,16 @@ public abstract class QLearningAgent {
     }
 
     public void loadQTable() throws IOException{
-        if(filePersister.fileExists()) filePersister.loadQTable(qTable);
+        filePersister.loadQTable(qTable);
     }
-
-    public void saveQTable() throws IOException{
-        filePersister.persistQTable(qTable);
-    }
-
-    public void seeQTable() {
-        filePersister.displayQTable(qTable);
-    }
+//
+//    public void saveQTable() throws IOException{
+//        filePersister.persistQTable(qTable);
+//    }
+//
+//    public void seeQTable() {
+//        filePersister.displayQTable(qTable);
+//    }
 }
 
 

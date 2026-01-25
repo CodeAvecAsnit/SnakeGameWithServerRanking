@@ -30,7 +30,7 @@
                 <configuration>
                     <transformers>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                            <mainClass>Main.LoginSystem</mainClass>
+                            <mainClass>Main.Launcher</mainClass>
                         </transformer>
                     </transformers>
                 </configuration>

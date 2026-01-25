@@ -22,7 +22,7 @@
         <configuration>
           <transformers>
             <transformer>
-              <mainClass>Main.LoginSystem</mainClass>
+              <mainClass>Main.Launcher</mainClass>
             </transformer>
           </transformers>
         </configuration>

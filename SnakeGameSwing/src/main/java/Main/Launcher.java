@@ -9,14 +9,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 /**
  * @author : Asnit Bakhati
  */
-public class LoginSystem extends JFrame {
+public class Launcher extends JFrame {
 
     private final JTextField usernameField;
     private final JPasswordField passwordField;
@@ -37,7 +36,7 @@ public class LoginSystem extends JFrame {
     private Image appleImage;
     private Image trophyImage;
 
-    public LoginSystem(){
+    public Launcher(){
         this.dbm = new DatabaseManager();
         setTitle("Snake World");
         setSize(screenWidth, screenHeight);
@@ -436,6 +435,6 @@ public class LoginSystem extends JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        SwingUtilities.invokeLater(() -> new LoginSystem().setVisible(true));
+        SwingUtilities.invokeLater(() -> new Launcher().setVisible(true));
     }
 }

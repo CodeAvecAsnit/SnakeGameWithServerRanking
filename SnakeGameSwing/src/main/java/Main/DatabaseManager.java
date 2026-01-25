@@ -1,5 +1,6 @@
 package Main;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -9,17 +10,27 @@ import java.sql.*;
  * @author : Asnit Bakhati
  */
 public class DatabaseManager {
+        private static final String DB_NAME = "snakegame.db";
+        private static final String USER_HOME = System.getProperty("user.home");
+        private static final String DB_PATH = USER_HOME + File.separator + ".snakegame" + File.separator + DB_NAME;
 
-    private final String DbUrl = "jdbc:sqlite:snakeGame.db";
+        public Connection getConnection() {
+            try {
+                File folder = new File(USER_HOME + File.separator + ".snakegame");
+                if (!folder.exists()) folder.mkdirs();
+
+                String url = "jdbc:sqlite:" + DB_PATH;
+                return DriverManager.getConnection(url);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
 
     public DatabaseManager(){
         initializeDatabase();
     }
 
-
-    public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DbUrl);
-    }
 
 
     public void initializeDatabase(){
@@ -79,8 +90,7 @@ public class DatabaseManager {
             }
         }
     }
-
-
+    
 
     public String hashString(String input) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");

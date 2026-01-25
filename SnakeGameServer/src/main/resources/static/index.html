@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Engineering Snake Game AI - Blog</title>
-    <!-- Bootstrap CSS -->
+    <title>Building Snake Game AI - Blog</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Marcellus&display=swap" rel="stylesheet">
@@ -37,9 +35,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03) 0px, transparent 1px, transparent 32px, rgba(255, 255, 255, 0.03) 33px),
-                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0px, transparent 1px, transparent 32px, rgba(255, 255, 255, 0.03) 33px);
+            background-image:
+                    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03) 0px, transparent 1px, transparent 32px, rgba(255, 255, 255, 0.03) 33px),
+                    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0px, transparent 1px, transparent 32px, rgba(255, 255, 255, 0.03) 33px);
             z-index: -1;
         }
 
@@ -56,6 +54,17 @@
             font-weight: 700;
             text-shadow: 0 0 10px rgba(0, 255, 127, 0.5);
             transition: all 0.3s ease;
+        }
+
+        .nav-link-github {
+            color: #ffffff !important;
+            margin-right: 20px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link-github:hover {
+            color: #00ff7f !important;
         }
 
         .navbar-brand:hover {
@@ -119,7 +128,7 @@
             font-family: 'Marcellus', serif;
             color: #00ff7f;
             font-size: 1.8rem;
-            margin-top: 2rem;
+            margin-top: 2.5rem;
             margin-bottom: 1rem;
         }
 
@@ -133,6 +142,27 @@
 
         .blog-content p {
             margin-bottom: 1.2rem;
+        }
+
+        .blog-content ul {
+            margin-bottom: 1.2rem;
+            padding-left: 2rem;
+        }
+
+        .blog-content ul li {
+            margin-bottom: 0.6rem;
+        }
+
+        .blog-content a {
+            color: #00ff7f;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(0, 255, 127, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .blog-content a:hover {
+            color: #00cc66;
+            border-bottom-color: #00cc66;
         }
 
         .video-container {
@@ -149,11 +179,53 @@
         }
 
         .highlight-box {
-            background: rgba(0, 255, 127, 0.1);
+            background: rgba(0, 255, 127, 0.08);
+            border: 1px solid rgba(0, 255, 127, 0.3);
             border-left: 4px solid #00ff7f;
             padding: 1.5rem;
-            margin: 2rem 0;
+            margin: 1.5rem 0;
             border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .highlight-box strong {
+            color: #00ff7f;
+        }
+
+        .equation-box {
+            background: rgba(0, 255, 127, 0.05);
+            border: 2px solid #00ff7f;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-family: 'Space Mono', monospace;
+            color: #00ff7f;
+            box-shadow: 0 4px 20px rgba(0, 255, 127, 0.2);
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, rgba(0, 255, 127, 0.1) 0%, rgba(0, 204, 102, 0.1) 100%);
+            border: 2px solid #00ff7f;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 255, 127, 0.2);
+        }
+
+        .result-box ul {
+            margin-bottom: 0;
+            padding-left: 1.5rem;
+        }
+
+        .result-box li {
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+        }
+
+        .result-box strong {
+            color: #00ff7f;
         }
 
         footer {
@@ -180,108 +252,183 @@
             .video-container iframe {
                 height: 300px;
             }
+
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+
+            .nav-link-github {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand" href="index.html">🐍 SNAKE GAME</a>
-            <a class="navbar-brand" href="leaderboards.html">🏆 LEADERBOARDS</a>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand" href="index.html">SNAKE GAME</a>
+        <div class="ms-auto d-flex align-items-center">
+            <a class="navbar-brand me-4" href="leaderboards.html">🏆 LEADERBOARDS</a>
+            <a class="nav-link-github" href="https://github.com/CodeAvecAsnit/AutonomousSnakeGame" target="_blank">GITHUB REPO</a>
             <button class="btn btn-download" onclick="downloadGame()">
-                📦 Download Game
+                Download Game
             </button>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <main>
-        <div class="container">
-            <div class="blog-container">
-                <h1 class="blog-title">Engineering Snake Game to Think</h1>
+<main>
+    <div class="container">
+        <div class="blog-container">
+            <h1 class="blog-title">Building an Autonomous Snake Game with Q-Learning</h1>
+
+            <div class="blog-meta">
+                <span>By CodeAvecAsnit</span>
+            </div>
+
+            <div class="blog-content">
+
+                <h2>Introduction</h2>
+                <p>The Classic Snake Game is one of the most iconic games in history, reaching global fame as the pre-installed staple on Nokia mobile phones in the late 1990s and early 2000s. I remember playing this game on my parents' keypad phone.</p>
+                <p>The Classic Snake Game, at its heart, is a geometry-based survival puzzle. You control a line that grows in length every time it consumes an apple. The challenge is purely mathematical and spatial—as the snake grows, the available free coordinates on the grid decrease, turning the game into a high-stakes battle against your own previous movements.</p>
+                <p>What makes it the perfect candidate for Reinforcement Learning is its clear set of constraints. It has a defined state (the grid), a limited action space (Up, Down, Left, Right), and positive and negative outcomes (success via eating apples or failure via collision with the body or boundary of the grid). By automating this game, we aren't just playing—we are solving a classic path optimization problem using modern AI.</p>
                 
-                <div class="blog-meta">
-                    <span>By CodeAvecAsnit</span> • 
-                    <span>January 20, 2025</span> • 
-                    <span>5 min read</span>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/HbpIjAnHDbI" title="Automated Snake Game" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
 
-                <div class="blog-content">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                <h2>When Games Learn to Play Themselves</h2>
+                <p>We all know the Snake game is simple but becomes intensely challenging as the body grows longer with each apple consumed. It's a test of human reflexes, foresight, and movement planning. But what if we replaced the human with an algorithm? Could a machine not only play but truly learn to master this simple environment?</p>
+                <p>This isn't just about building a game—it's about building an autonomous agent from scratch. This journey took me through the basics of Reinforcement Learning, the necessity of classical pathfinding, and the challenges of developing an intelligent system. I encountered several problems like policy loops and reward design. The goal was clear: to create a Snake AI that wouldn't just follow rules but explore the environment, learn from mistakes, adapt, and ultimately play better than I ever could.</p>
 
-                    <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/HbpIjAnHDbI" title="Automated Snake Game" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                    </div>
-
-                    <h2>The Vision Behind the Project</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est.</p>
-
-                    <p>Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui.</p>
-
-                    <div class="highlight-box">
-                        <strong>Key Insight:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
-                    </div>
-
-                    <h2>Building the Intelligence</h2>
-                    <p>Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.</p>
-
-                    <h3>Algorithmic Approach</h3>
-                    <p>Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer ligula vulputate sem tristique cursus. Nam nulla quam, gravida non, commodo a, sodales sit amet, nisi. Pellentesque fermentum dolor. Aliquam quam lectus, facilisis auctor, ultrices ut, elementum vulputate, nunc.</p>
-
-                    <p>Sed adipiscing ornare risus. Morbi est est, blandit sit amet, sagittis vel, euismod vel, velit. Pellentesque egestas sem. Suspendisse commodo ullamcorper magna. Ut aliquam sollicitudin leo.</p>
-
-                    <h3>Learning and Adaptation</h3>
-                    <p>Cras iaculis ultricies nulla. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
-
-                    <p>Praesent mattis, massa quis luctus fermentum, turpis mi volutpat justo, eu volutpat enim diam eget metus. Maecenas ornare tortor. Donec sed tellus eget sapien fringilla nonummy. Mauris a ante. Suspendisse quam sem, consequat at, commodo vitae, feugiat in, nunc.</p>
-
-                    <h2>Technical Implementation</h2>
-                    <p>Morbi ut odio. Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo. In blandit ultrices enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin interdum mauris non ligula pellentesque ultrices.</p>
-
-                    <p>Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl. Aenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum.</p>
-
-                    <div class="highlight-box">
-                        <strong>Technical Highlight:</strong> Curabitur vulputate vestibulum lorem. In hac habitasse platea dictumst. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.
-                    </div>
-
-                    <h2>Results and Performance</h2>
-                    <p>Nunc viverra imperdiet enim. Fusce est. Vivamus a tellus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin pharetra nonummy pede. Mauris et orci.</p>
-
-                    <p>Aenean nec lorem. In porttitor. Donec laoreet nonummy augue. Suspendisse dui purus, scelerisque at, vulputate vitae, pretium mattis, nunc. Mauris eget neque at sem venenatis eleifend. Ut nonummy.</p>
-
-                    <h2>Future Directions</h2>
-                    <p>Fusce mauris. Vestibulum luctus nibh at lectus. Sed bibendum, nulla a faucibus semper, leo velit ultricies tellus, ac venenatis arcu wisi vel nisl. Vestibulum diam. Aliquam pellentesque, augue quis sagittis posuere, turpis lacus congue quam, in hendrerit risus eros eget felis.</p>
-
-                    <p>Maecenas eget erat in sapien mattis porttitor. Vestibulum porttitor. Nulla facilisi. Sed a turpis eu lacus commodo facilisis. Morbi fringilla, wisi in dignissim interdum, justo lectus sagittis dui, et vehicula libero dui cursus dui. Mauris tempor ligula sed lacus.</p>
-
-                    <div class="highlight-box">
-                        <strong>Conclusion:</strong> Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit laoreet nibh.
-                    </div>
+                <h2>Unpacking Q-Learning: Exploration, Exploitation, and the Bellman Equation</h2>
+                <p>At the core of this project lies Q-Learning, a fundamental algorithm in Reinforcement Learning. Unlike traditional programming where we explicitly tell the snake what to do (if wall is left, turn right), Q-Learning lets the agent figure it out through trial and error, learning from the consequences of its actions.</p>
+                
+                <h3>The Learning Loop: States, Actions, and Rewards</h3>
+                <p>Imagine the snake existing in a series of states—the current configuration of the game (its position, the food's position, nearby dangers). From each state, it can take an action (move Straight, Left, or Right). For every action, the environment provides a reward:</p>
+                
+                <div class="highlight-box">
+                    <strong>Reward Structure:</strong>
+                    <ul style="margin-top: 0.8rem; margin-bottom: 0;">
+                        <li><strong>+100 + new score × 2:</strong> Eating an apple—the primary goal</li>
+                        <li><strong>-200:</strong> Colliding with a wall or its own tail—a severe penalty to avoid death</li>
+                        <li><strong>-1.5:</strong> A small penalty if the Manhattan distance between the snake and the apple increases</li>
+                        <li><strong>+1:</strong> A small reward if the Manhattan distance decreases</li>
+                    </ul>
                 </div>
+                
+                <p>The agent's trained value (knowledge) is stored in a Q-table, which is a multidimensional array where each entry Q(s, a) represents the expected future reward of taking action a in state s. The Q-table is further persisted through a binary file with the help of file handling and loaded every time it's necessary.</p>
+
+                <h3>The Bellman Equation: The Agent's Internal Dialogue</h3>
+                <p>After every action, the Q-table is updated using the Bellman Equation:</p>
+                
+                <div class="equation-box">
+                    Q(s, a) = Q(s, a) + α [R + γ max Q(s', a') - Q(s, a)]
+                </div>
+                
+                <p>Let's break down this equation:</p>
+                
+                <div class="highlight-box">
+                    <strong>Bellman Equation Components:</strong>
+                    <ul style="margin-top: 0.8rem; margin-bottom: 0;">
+                        <li><strong>Q(s, a):</strong> The current estimated value of taking action 'a' in state 's'</li>
+                        <li><strong>α (learning rate):</strong> Controls how much the agent overrides old information with new information. A high α means it learns quickly but might be unstable; a low α means it learns slowly but steadily</li>
+                        <li><strong>R (reward):</strong> The immediate reward received after taking action 'a' in state 's'</li>
+                        <li><strong>γ (discount factor):</strong> Determines the importance of future rewards. A high γ means the agent plans for the long term; a low γ makes it focus on immediate gratification</li>
+                        <li><strong>max Q(s', a'):</strong> The maximum expected future reward from the next state—the look-ahead component</li>
+                        <li><strong>[R + γ max Q(s', a') - Q(s, a)]:</strong> The temporal difference error—the difference between what the agent expected to happen and what actually happened</li>
+                    </ul>
+                </div>
+                
+                <p><strong>In summary:</strong> The snake adjusts its estimate of an action's worth by comparing its current expectation with a more informed prediction (based on the immediate outcome and the best possible future). It's constantly asking: "Was my previous guess about this move accurate, given what just happened and what might come next?"</p>
+
+                <h3>The Role of Flood Fill</h3>
+                <p>When the Q-table fails to see the long body of the snake, Flood Fill acts as a safety net. It calculates the reachable area of the grid. If a move toward an apple results in the snake entering a pocket smaller than its own body, the Flood Fill override forces the snake to take a safer, longer path. This synergy between Reinforcement Learning (decision-making) and Classical Algorithms (constraints) is the secret to high-scoring automation.</p>
+
+                <h2>The Epsilon-Greedy Strategy: The Critical Role of Randomness for True Learning</h2>
+                <p>A common failure in early RL training is an agent getting stuck. It only follows what action is best according to the Q-table; therefore, it might never discover other actions. This is where the ε-greedy strategy comes in, balancing exploration (trying new things) with exploitation (using learned knowledge).</p>
+                
+                <div class="highlight-box">
+                    <strong>Epsilon-Greedy Strategy:</strong>
+                    <ul style="margin-top: 0.8rem; margin-bottom: 0;">
+                        <li><strong>High ε (exploration phase):</strong> At the beginning of training, ε is high for more exploration. The snake takes random actions, allowing it to explore the environment, discover better rewards by chance, and experience penalties—building a foundational Q-table. Without this phase, the snake would never learn how to navigate efficiently</li>
+                        <li><strong>ε-decay (gradual shift to exploitation):</strong> As training progresses, ε slowly decays (ε = ε × 0.995). The snake gradually shifts from random actions to choosing the action with the highest Q-value, becoming more strategic and efficient</li>
+                    </ul>
+                </div>
+                
+                <p>This decaying randomness is crucial. It prevents the agent from getting trapped in local optima—solutions that seem good but aren't globally optimal.</p>
+
+                <h2>Implementation</h2>
+                <p>To implement this project, I utilized Java and its OOP features to ensure the code was as intelligent as the agent itself. I used abstract classes to define a blueprint class QLearningAgent for all QL agents, using polymorphism to decouple the core game loop from specific behaviors. For the interface, I leveraged Java Swing, overriding the paintComponent method for high-performance, custom-rendered GUI. To persist the agent's learned state, I built a simple file handling class using buffered streams. Finally, I scaled the project by developing a Spring Boot REST API for rankings, secured with HMAC-SHA256 digital signatures to ensure some level of score security. The implementation is available on <a href="https://github.com/CodeAvecAsnit/AutonomousSnakeGame" target="_blank">GitHub</a>.</p>
+
+                <h2>Result: The 104 Apple Peak</h2>
+                <p>On a 25 × 25 grid environment, the complexity grows exponentially. After intensive training and multiple corrections, my agent achieved:</p>
+                
+                <div class="result-box">
+                    <ul>
+                        <li><strong>Average Score:</strong> 52 Apples</li>
+                        <li><strong>Peak Score:</strong> 104 Apples</li>
+                    </ul>
+                </div>
+                
+                <p>While 104 apples is a massive achievement for an agent, a performance ceiling was hit—also known as peaking. The agent becomes excellent at finding food but struggles with long-term planning. As the snake gets longer, the state representation becomes too blurry to account for the 100+ block-long body.</p>
+
+                <h2>The Future of Autonomy: From Game to Global Systems</h2>
+                <p>While a 104-apple run in Snake is an achievement, the true value of this project lies in its role as a blueprint. The logic used here—balancing a goal-oriented decision-maker (Q-Learning) with a safety-first constraint engine (Flood Fill)—is the exact foundation required for the next generation of autonomous systems.</p>
+                
+                <h3>Multi-Agent Warehouse and E-commerce Automation</h3>
+                <p>The leap from a single snake to a fleet of warehouse robots is smaller than you might think. Imagine an Amazon fulfillment center where hundreds of autonomous units must navigate a 3D grid to retrieve items.</p>
+                
+                <div class="highlight-box">
+                    <strong>From Snake to Warehouse:</strong>
+                    <ul style="margin-top: 0.8rem; margin-bottom: 0;">
+                        <li><strong>The Challenge:</strong> Instead of one snake avoiding its own tail, you have hundreds of robots avoiding each other</li>
+                        <li><strong>The Solution:</strong> By using Multi-Agent Reinforcement Learning (MARL), each robot treats others as dynamic obstacles. The Flood Fill logic we used for survival evolves into path-reservation protocols, ensuring that no robot enters a dead-end aisle where it might cause a multi-million-dollar traffic jam</li>
+                    </ul>
+                </div>
+
+                <h3>Q-Learning for Life: Safe Sepsis Treatment</h3>
+                <p>One of the most profound applications of optimal policies is in healthcare. Researchers are currently using Offline Reinforcement Learning to develop optimal ICU policies for treating sepsis.</p>
+
+                <div class="highlight-box">
+                    <strong>Medical Application Framework:</strong>
+                    <ul style="margin-top: 0.8rem; margin-bottom: 0;">
+                        <li><strong>State:</strong> A patient's vital signs (heart rate, oxygen, blood pressure)</li>
+                        <li><strong>Action:</strong> Precise dosages of vasopressors or IV fluids</li>
+                        <li><strong>Reward:</strong> Patient stabilization, survival, and long-term recovery</li>
+                    </ul>
+                </div>
+                
+                <p>In medicine, we cannot explore by making mistakes. Just as our snake uses Flood Fill to avoid traps, medical agents use Conservative Q-Learning (CQL) as a safety constraint. Standard RL might suggest a high-risk dosage because it "thinks" it found a shortcut to recovery. CQL prevents this by being pessimistic about actions not found in historical doctor data. It ensures the AI stays within safe policy boundaries, refusing to suggest dosages that, while mathematically optimal for fast reward, are physiologically dangerous for human beings.</p>
+
+                <h2>Conclusion</h2>
+                <p>I started with a classic game and a simple goal: don't hit the wall and the body. But in solving that problem, I touched on the core pillars of modern engineering—intelligent decision-making, cryptographic security, and spatial safety—to build this autonomous agent. The automated Snake isn't just a bot playing a game; it is a demonstration that with the right combination of RL and classical algorithms, we can build agents that are not only smart but safe, secure, and ready for the real world.</p>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <p>© 2025 Snake Game. All rights reserved. | Made with 💚 by CodeAvecAsnit</p>
-                </div>
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <p>&copy; 2025 Snake Game. All rights reserved. | Made by CodeAvecAsnit</p>
             </div>
         </div>
-    </footer>
+    </div>
+</footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 
-    <script>
-        function downloadGame() {
-            const link = document.createElement('a');
-            link.href = 'SnakeGame.jar';
-            link.download = 'SnakeGame.jar';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-    </script>
+<script>
+    function downloadGame() {
+        const link = document.createElement('a');
+        link.href = 'SnakeGame.jar';
+        link.download = 'SnakeGame.jar';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
 </body>
 </html>

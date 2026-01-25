@@ -11,7 +11,7 @@ public abstract class SnakeManagerAgent extends QLearningAgent {
 
     public static final int STATES_SIZE = 4096;
     public static final int ACTION_SIZE = 3;
-    private static final String FILE_NAME = "snakeTableVast.bin";
+    private static final String FILE_NAME = "/model/snakeTableVast.bin";
     protected final GamePanel gamePanel;
 
     public SnakeManagerAgent(GamePanel gamePanel) {
@@ -83,13 +83,13 @@ public abstract class SnakeManagerAgent extends QLearningAgent {
     }
 
 
-
-    public void updateQTable(int state, int action, double reward, int nextState) {
-        double maxNextQ = 0;
-        for (double v : qTable[nextState]) maxNextQ = Math.max(maxNextQ, v);
-        qTable[state][action] += alpha * (reward + gamma * maxNextQ - qTable[state][action]);
-    }
-
+//
+//    public void updateQTable(int state, int action, double reward, int nextState) {
+//        double maxNextQ = 0;
+//        for (double v : qTable[nextState]) maxNextQ = Math.max(maxNextQ, v);
+//        qTable[state][action] += alpha * (reward + gamma * maxNextQ - qTable[state][action]);
+//    }
+//
 
 
     public void moveRelative(int action) {
@@ -214,25 +214,25 @@ public abstract class SnakeManagerAgent extends QLearningAgent {
         if (minDist < 192) return 1; // medium
         return 0; // far from walls
     }
-
-
-    private int getDistanceCategory(int distance) {
-        if (distance < 96) return 0;  // close (< 3 tiles)
-        if (distance < 192) return 1; // medium (3-6 tiles)
-        if (distance < 320) return 2; // far (6-10 tiles)
-        return 3; // very far (>10 tiles)
-    }
-
-
-    private int[] getPositionInDirection(int x, int y, Direction dir, int distance) {
-        switch (dir) {
-            case UP: return new int[]{x, y - distance};
-            case DOWN: return new int[]{x, y + distance};
-            case LEFT: return new int[]{x - distance, y};
-            case RIGHT: return new int[]{x + distance, y};
-        }
-        return new int[]{x, y};
-    }
+//
+//
+//    private int getDistanceCategory(int distance) {
+//        if (distance < 96) return 0;  // close (< 3 tiles)
+//        if (distance < 192) return 1; // medium (3-6 tiles)
+//        if (distance < 320) return 2; // far (6-10 tiles)
+//        return 3; // very far (>10 tiles)
+//    }
+//
+//
+//    private int[] getPositionInDirection(int x, int y, Direction dir, int distance) {
+//        switch (dir) {
+//            case UP: return new int[]{x, y - distance};
+//            case DOWN: return new int[]{x, y + distance};
+//            case LEFT: return new int[]{x - distance, y};
+//            case RIGHT: return new int[]{x + distance, y};
+//        }
+//        return new int[]{x, y};
+//    }
 
 
 
