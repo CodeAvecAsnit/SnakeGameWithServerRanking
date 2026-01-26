@@ -10,7 +10,7 @@ import java.util.Random;
 
 /**
  * @author : Asnit Bakhati
- * This class deals with all the Apple Generation and draws the image of Apple in AppleX and AppleY
+ * This class deals with all the Apple Generation and draws the image of Apple in AppleX and AppleY(not vibecoded)
  */
 public class Apple {
     //Inject the main Game Panel

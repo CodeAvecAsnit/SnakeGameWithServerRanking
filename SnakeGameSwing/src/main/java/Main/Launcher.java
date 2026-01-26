@@ -22,7 +22,6 @@ public class Launcher extends JFrame {
     private final JLabel messageLabel;
     private DatabaseManager dbm;
 
-
     private final int screenWidth = 800;
     private final int screenHeight = 800;
 
@@ -37,7 +36,9 @@ public class Launcher extends JFrame {
     private Image trophyImage;
 
     public Launcher(){
+
         this.dbm = new DatabaseManager();
+
         setTitle("Snake World");
         setSize(screenWidth, screenHeight);
         setDefaultCloseOperation(3);
@@ -90,12 +91,13 @@ public class Launcher extends JFrame {
                 super.paintComponent(g);
             }
         };
+
         titleLabel.setFont(new Font("Space Mono", Font.BOLD, 56));
         titleLabel.setForeground(accentGreen);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         titleLabel.setBounds(0, 80, screenWidth, 70);
 
-        JLabel subtitleLabel = new JLabel("Enter the Arena");
+        JLabel subtitleLabel = new JLabel("Enter the Snake Arena");
         subtitleLabel.setFont(new Font("Space Mono", Font.PLAIN, 18));
         subtitleLabel.setForeground(textLight);
 
@@ -114,35 +116,44 @@ public class Launcher extends JFrame {
                 g2d.drawRoundRect(1, 1, getWidth() - 7, getHeight() - 7, 20, 20);
             }
         };
+
         loginCard.setLayout(null);
         loginCard.setOpaque(false);
         loginCard.setBounds(200, 230, 400, 280);
         JPanel userLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         userLabelPanel.setOpaque(false);
         userLabelPanel.setBounds(30, 30, 340, 24);
+
         if (appleImage != null) {
             JLabel appleIcon = new JLabel(new ImageIcon(appleImage.getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
             userLabelPanel.add(appleIcon);
         }
+
         JLabel userLabel = new JLabel("USERNAME");
         userLabel.setFont(new Font("Space Mono", Font.BOLD, 12));
         userLabel.setForeground(textLight);
         userLabelPanel.add(userLabel);
+
         usernameField = createStyledTextField();
         usernameField.setBounds(30, 58, 340, 45);
+
         JPanel passLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         passLabelPanel.setOpaque(false);
         passLabelPanel.setBounds(30, 118, 340, 24);
+
         if (trophyImage != null) {
             JLabel trophyIcon = new JLabel(new ImageIcon(trophyImage.getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
             passLabelPanel.add(trophyIcon);
         }
+
         JLabel passLabel = new JLabel("PASSWORD");
         passLabel.setFont(new Font("Space Mono", Font.BOLD, 12));
         passLabel.setForeground(textLight);
         passLabelPanel.add(passLabel);
+
         passwordField = createStyledPasswordField();
         passwordField.setBounds(30, 146, 340, 45);
+
         messageLabel = new JLabel("", SwingConstants.CENTER);
         messageLabel.setFont(new Font("Space Mono", Font.PLAIN, 12));
         messageLabel.setForeground(errorRed);
@@ -224,6 +235,7 @@ public class Launcher extends JFrame {
                 super.paintComponent(g);
             }
         };
+
         field.setOpaque(false);
         field.setFont(new Font("Space Mono", Font.PLAIN, 16));
         field.setForeground(textLight);
@@ -254,11 +266,13 @@ public class Launcher extends JFrame {
                 super.paintComponent(g);
             }
         };
+
         field.setOpaque(false);
         field.setFont(new Font("Space Mono", Font.PLAIN, 16));
         field.setForeground(textLight);
         field.setCaretColor(accentGreen);
         field.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+
         return field;
     }
 
@@ -314,6 +328,7 @@ public class Launcher extends JFrame {
     }
 
     private void createNewUser() {
+
         JPanel panel = new JPanel(new GridLayout(6, 1, 5, 10));
         panel.setBackground(cardBg);
         panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));

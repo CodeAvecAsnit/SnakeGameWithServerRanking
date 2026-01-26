@@ -10,7 +10,7 @@ import java.sql.*;
  * @author : Asnit Bakhati
  */
 public class DatabaseManager {
-        private static final String DB_NAME = "snakegame.db";
+        private static final String DB_NAME = "sqliteSnake.db";
         private static final String USER_HOME = System.getProperty("user.home");
         private static final String DB_PATH = USER_HOME + File.separator + ".snakegame" + File.separator + DB_NAME;
 
@@ -90,7 +90,7 @@ public class DatabaseManager {
             }
         }
     }
-    
+
 
     public String hashString(String input) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -103,7 +103,6 @@ public class DatabaseManager {
         }
         return sb.toString();
     }
-
 
 
     public boolean noUser() throws SQLException {

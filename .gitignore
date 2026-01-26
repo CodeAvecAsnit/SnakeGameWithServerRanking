@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+
+# IntelliJ / IDEs
+.idea/
+*.iml
+
+# Maven / build
+target/
+dependency-reduced-pom.xml
+
+# Java
+*.jar
+
+# Logs
+*.log
+

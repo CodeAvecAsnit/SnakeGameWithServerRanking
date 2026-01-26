@@ -59,7 +59,6 @@ public class UI {
     }
 
 
-
     public void draw(Graphics2D graphics2D) {
         graphics2D.setColor(Color.WHITE);
         graphics2D.setFont(font);

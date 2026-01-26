@@ -16,10 +16,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author : Asnit Bakhati
+ */
 public class APIRequest {
 
-    public static final String baseURL = "http://localhost:8080/";
-
+    public static final String baseURL = "https://ecommercedeploy-35yl.onrender.com/";
 
     private static String getDigitalSignature(String username, int score) {
         try {
@@ -118,5 +120,4 @@ public class APIRequest {
             return false;
         }
     }
-
 }
