@@ -5,6 +5,9 @@ import jakarta.transaction.Transactional;
 
 import java.util.List;
 
+/**
+ * @author : Asnit Bakhati
+ */
 public interface SnakeGameService {
     @Transactional
     boolean save(SnakeGameUser snakeGameUser);

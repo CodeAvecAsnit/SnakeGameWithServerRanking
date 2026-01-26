@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @author : Asnit Bakhati
+ */
 @RestController
 @RequestMapping("/api/snakeGame")
 public class SnakeGameController{
